@@ -45,3 +45,6 @@ Insert placeholder in your HTML file `<head>` section:
 ```html
 <generated-assets/>
 ```
+
+# Examples
+* [WebM-TV](https://github.com/Karasiq/webm-tv)
