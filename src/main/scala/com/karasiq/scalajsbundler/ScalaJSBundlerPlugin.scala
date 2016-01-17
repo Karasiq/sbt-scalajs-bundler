@@ -61,7 +61,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           compiler.createHtml(compilers, dest.toString, page, contents)
         }
         fileList(dest.toPath)
-      }
+      },
+      managedResources ++= scalaJsBundlerCompile.value
     )
   }
 
