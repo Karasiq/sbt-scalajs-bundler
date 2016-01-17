@@ -9,7 +9,7 @@ object JsClosureCompiler extends AssetCompiler {
   override def compile(contents: Seq[PageTypedContent]): String = {
     val compiler = new Compiler()
     val options = new CompilerOptions
-    CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
+    CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
     val jsInput = contents.zipWithIndex.map { case (c, index) ⇒
       SourceFile.fromCode(s"input_$index.js", c.asset.asString)
     }

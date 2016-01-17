@@ -46,13 +46,13 @@ class ScalaJSBundleCompiler {
     for (PageScript(asset, ext, mime) <- scripts.values) {
       val file = new File(s"scripts/${UUID.randomUUID()}.$ext")
       writeAsset(asset, new File(s"$outputDir/$file"))
-      assetsHtml.append(s"<script type='$mime' src='${makeUrl(file)}'></script>")
+      assetsHtml.append("<script type=\"" + mime + "\" src=\"" + makeUrl(file) + "\"></script>")
     }
 
     for (PageStyle(asset, ext, mime) <- styles.values) {
       val file = new File(s"styles/${UUID.randomUUID()}.$ext")
       writeAsset(asset, new File(s"$outputDir/$file"))
-      assetsHtml.append(s"<link rel='stylesheet' type='$mime' src='${makeUrl(file)}'/>")
+      assetsHtml.append("<link rel=\"stylesheet\" href=\"" + makeUrl(file) + "\"/>")
     }
 
     for (PageFile(name, asset, ext, mime) <- static) {

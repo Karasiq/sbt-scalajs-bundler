@@ -54,7 +54,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       scalaJsBundlerDest := resourceManaged.value / "webapp",
       scalaJsBundlerCompilers := AssetCompilers.default,
       scalaJsBundlerCompile <<= (scalaJsBundlerAssets, scalaJsBundlerDest, scalaJsBundlerCompilers, streams).map { (src, dest, compilers, streams) ⇒
-        streams.log("Compiling Scala.js assets")
+        streams.log.info("Compiling Scala.js assets")
         clearDirectory(dest.toPath)
         val compiler = new ScalaJSBundleCompiler
         src.foreach { case Bundle(page, contents @ _*) ⇒

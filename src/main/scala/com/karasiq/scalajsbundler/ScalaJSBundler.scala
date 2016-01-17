@@ -28,7 +28,9 @@ object ScalaJSBundler {
 
   case class WebAsset(url: String) extends Asset {
     override def content(): InputStream = {
-      new ByteArrayInputStream(Http(url).options(HttpOptions.connTimeout(10000), HttpOptions.readTimeout(10000)).asBytes.body)
+      val http = Http(url).options(HttpOptions.connTimeout(10000), HttpOptions.readTimeout(10000)).asBytes
+      assert(http.isSuccess, s"Web asset download failed: $url")
+      new ByteArrayInputStream(http.body)
     }
   }
 
