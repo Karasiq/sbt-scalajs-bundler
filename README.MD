@@ -40,3 +40,8 @@ scalaJsBundlerAssets in Compile += Bundle("index",
   PageScript(FileAsset("frontend/target/scala-2.11/your-app-frontend-launcher.js"))
 )
 ```
+
+Insert placeholder in your HTML file `<head>` section:
+```html
+<generated-assets/>
+```
