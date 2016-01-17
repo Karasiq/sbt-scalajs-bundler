@@ -12,7 +12,7 @@ sbtPlugin := true
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.4" % "test",
-  "com.google.javascript" % "closure-compiler" % "v20151216",
+  "com.google.javascript" % "closure-compiler" % "v20151216" % "provided",
   "com.yahoo.platform.yui" % "yuicompressor" % "2.4.8",
   "commons-io" % "commons-io" % "2.4",
   "com.googlecode.htmlcompressor" % "htmlcompressor" % "1.5.2",

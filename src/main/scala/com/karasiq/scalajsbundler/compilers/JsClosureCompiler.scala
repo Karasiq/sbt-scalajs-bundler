@@ -13,7 +13,7 @@ object JsClosureCompiler extends AssetCompiler {
     val jsInput = contents.zipWithIndex.map { case (c, index) ⇒
       SourceFile.fromCode(s"input_$index.js", c.asset.asString)
     }
-    val result = compiler.compile(AbstractCommandLineRunner.getBuiltinExterns(options), jsInput, options)
+    val result = compiler.compile(CommandLineRunner.getDefaultExterns, jsInput, options)
     // result.errors.foreach(e ⇒ println(e.toString))
     assert(result.errors.isEmpty, "Compilation failed")
     //result.warnings.foreach(e ⇒ println(e.toString))
