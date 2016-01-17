@@ -5,7 +5,7 @@ import java.io._
 import org.apache.commons.io.IOUtils
 
 import scala.util.control.Exception
-import scalaj.http.Http
+import scalaj.http.{Http, HttpOptions}
 
 object ScalaJSBundler {
   sealed trait Asset {
@@ -28,7 +28,7 @@ object ScalaJSBundler {
 
   case class WebAsset(url: String) extends Asset {
     override def content(): InputStream = {
-      new ByteArrayInputStream(Http(url).asBytes.body)
+      new ByteArrayInputStream(Http(url).options(HttpOptions.connTimeout(10000), HttpOptions.readTimeout(10000)).asBytes.body)
     }
   }
 

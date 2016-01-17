@@ -4,6 +4,7 @@ import java.nio.file.attribute.BasicFileAttributes
 
 import com.karasiq.scalajsbundler.ScalaJSBundleCompiler
 import com.karasiq.scalajsbundler.ScalaJSBundler._
+import com.karasiq.scalajsbundler.compilers.AssetCompilers
 import org.scalatest.{FlatSpec, Matchers}
 
 class ScalaJSBundlerTest extends FlatSpec with Matchers {
@@ -59,6 +60,6 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
       }
     })
     val compiler = new ScalaJSBundleCompiler
-    compiler.createHtml(output, "index", Seq(jquery, script, style, font, html))
+    compiler.createHtml(AssetCompilers.default, output, "index", Seq(jquery, script, style, font, html))
   }
 }

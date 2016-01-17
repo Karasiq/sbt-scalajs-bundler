@@ -5,6 +5,7 @@ import java.nio.file.attribute.BasicFileAttributes
 import java.nio.file.{Path, _}
 
 import com.karasiq.scalajsbundler.ScalaJSBundler.Bundle
+import com.karasiq.scalajsbundler.compilers.AssetCompilers
 import sbt.Keys._
 import sbt._
 import sbt.plugins.JvmPlugin
@@ -45,17 +46,19 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
   object autoImport {
     val scalaJsBundlerAssets = settingKey[Seq[Bundle]]("Scala.js bundler resources")
     val scalaJsBundlerDest = settingKey[File]("Scala.js bundler output directory")
+    val scalaJsBundlerCompilers = settingKey[AssetCompilers]("Scala.js asset compilers")
     val scalaJsBundlerCompile = taskKey[Seq[File]]("Compiles Scala.js bundles")
 
     lazy val baseScalaJsBundlerSettings: Seq[Def.Setting[_]] = Seq(
       scalaJsBundlerAssets := Nil,
       scalaJsBundlerDest := resourceManaged.value / "webapp",
-      scalaJsBundlerCompile <<= (scalaJsBundlerAssets, scalaJsBundlerDest, streams).map { (src, dest, streams) ⇒
+      scalaJsBundlerCompilers := AssetCompilers.default,
+      scalaJsBundlerCompile <<= (scalaJsBundlerAssets, scalaJsBundlerDest, scalaJsBundlerCompilers, streams).map { (src, dest, compilers, streams) ⇒
         streams.log("Compiling Scala.js assets")
         clearDirectory(dest.toPath)
         val compiler = new ScalaJSBundleCompiler
         src.foreach { case Bundle(page, contents @ _*) ⇒
-          compiler.createHtml(dest.toString, page, contents)
+          compiler.createHtml(compilers, dest.toString, page, contents)
         }
         fileList(dest.toPath)
       }
