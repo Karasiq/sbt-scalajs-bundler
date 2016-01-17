@@ -4,12 +4,12 @@ import java.io._
 
 import org.apache.commons.io.IOUtils
 
-import scala.io.Source
 import scala.util.control.Exception
+import scalaj.http.Http
 
 object ScalaJSBundler {
   sealed trait Asset {
-    def content(): Reader
+    def content(): InputStream
 
     def asString: String = {
       val reader = this.content()
@@ -21,20 +21,20 @@ object ScalaJSBundler {
   }
 
   case class FileAsset(path: String) extends Asset {
-    override def content(): Reader = {
-      Source.fromFile(path, "ASCII").bufferedReader()
+    override def content(): InputStream = {
+      new FileInputStream(path)
     }
   }
 
   case class WebAsset(url: String) extends Asset {
-    override def content(): Reader = {
-      Source.fromURL(url, "ASCII").bufferedReader()
+    override def content(): InputStream = {
+      new ByteArrayInputStream(Http(url).asBytes.body)
     }
   }
 
   case class StringAsset(data: String) extends Asset {
-    override def content(): Reader = {
-      new StringReader(data)
+    override def content(): InputStream = {
+      new ByteArrayInputStream(data.getBytes("UTF-8"))
     }
   }
 
@@ -65,5 +65,5 @@ object ScalaJSBundler {
 
   case class PageHtml(asset: Asset, ext: String = "html", mime: String = "text/html") extends PageTypedContent
 
-  case class Bundle(name: String, contents: Seq[PageContent])
+  case class Bundle(name: String, contents: PageContent*)
 }

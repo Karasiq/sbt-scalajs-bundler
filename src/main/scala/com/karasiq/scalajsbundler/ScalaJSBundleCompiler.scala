@@ -15,22 +15,24 @@ import scala.util.control.Exception
 class ScalaJSBundleCompiler {
   private def compileAssets(contents: Seq[PageTypedContent]): String = {
     require(contents.forall(_.mime == contents.head.mime))
-    val source = contents.map(_.asset.asString).mkString("\n")
+    def concat(): String = contents.map(_.asset.asString).mkString("\n")
 
     contents.head.mime match {
       case "text/javascript" ⇒
         val compiler = new Compiler()
         val options = new CompilerOptions
         CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
-        val jsInput = SourceFile.fromCode("input.js", source)
-        val result = compiler.compile(CommandLineRunner.getDefaultExterns, Seq(jsInput), options)
-        result.errors.foreach(e ⇒ println(e.toString))
+        val jsInput = contents.zipWithIndex.map { case (c, index) ⇒
+          SourceFile.fromCode(s"input_$index.js", c.asset.asString)
+        }
+        val result = compiler.compile(AbstractCommandLineRunner.getBuiltinExterns(options), jsInput, options)
+        // result.errors.foreach(e ⇒ println(e.toString))
         assert(result.errors.isEmpty, "Compilation failed")
-        result.warnings.foreach(e ⇒ println(e.toString))
+        //result.warnings.foreach(e ⇒ println(e.toString))
         compiler.toSource
 
       case "text/css" ⇒
-        val reader = new StringReader(source)
+        val reader = new StringReader(concat())
         val writer = new StringWriter(1024)
         val compressor = new CssCompressor(reader)
         compressor.compress(writer, -1)
@@ -38,23 +40,28 @@ class ScalaJSBundleCompiler {
 
       case "text/html" ⇒
         val compressor = new HtmlCompressor
-        compressor.compress(source)
+        compressor.compress(concat())
 
       case _ ⇒
-        source
+        concat()
     }
   }
 
   private def writeAsset(asset: Asset, file: File): Unit = {
+    require(file.getParentFile.isDirectory || file.getParentFile.mkdirs(), "Not a directory")
     val reader = asset.content()
-    val writer = new OutputStreamWriter(new FileOutputStream(file))
-    Exception.allCatch.andFinally { writer.close(); reader.close() } {
-      IOUtils.write(IOUtils.toByteArray(reader), writer)
+    val outputStream = new FileOutputStream(file)
+    Exception.allCatch.andFinally { outputStream.close() } {
+      IOUtils.write(IOUtils.toByteArray(reader), outputStream)
     }
   }
 
+  private def makeUrl(file: File): String = {
+    file.toString.split("[\\\\/]").mkString("/", "/", "")
+  }
+
   def createHtml(outputDir: String, name: String, contents: Seq[PageContent]): Unit = {
-    require(new File(outputDir).mkdirs(), "Not a directory")
+    require(new File(outputDir).isDirectory || new File(outputDir).mkdirs(), "Not a directory")
 
     val scripts = contents.collect { case s: PageScript ⇒ s }.groupBy(_.mime).mapValues { scripts ⇒
       PageScript(StringAsset(compileAssets(scripts)), scripts.head.ext, scripts.head.mime)
@@ -69,15 +76,15 @@ class ScalaJSBundleCompiler {
     val assetsHtml = new StringWriter(256)
 
     for (PageScript(asset, ext, mime) <- scripts.values) {
-      val file = new File(s"$outputDir/scripts/${UUID.randomUUID()}.$ext")
-      writeAsset(asset, file)
-      assetsHtml.append(s"<script type=\"$mime\" src=\"/$file\"></script>")
+      val file = new File(s"scripts/${UUID.randomUUID()}.$ext")
+      writeAsset(asset, new File(s"$outputDir/$file"))
+      assetsHtml.append(s"<script type='$mime' src='${makeUrl(file)}'></script>")
     }
 
     for (PageStyle(asset, ext, mime) <- styles.values) {
-      val file = new File(s"$outputDir/styles/${UUID.randomUUID()}.$ext")
-      writeAsset(asset, file)
-      assetsHtml.append(s"<link rel=\"stylesheet\" type=\"$mime\" src=\"/$file\"/>")
+      val file = new File(s"styles/${UUID.randomUUID()}.$ext")
+      writeAsset(asset, new File(s"$outputDir/$file"))
+      assetsHtml.append(s"<link rel='stylesheet' type='$mime' src='${makeUrl(file)}'/>")
     }
 
     for (PageFile(name, asset, ext, mime) <- static) {

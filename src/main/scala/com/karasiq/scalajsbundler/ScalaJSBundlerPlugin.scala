@@ -1,8 +1,8 @@
 package com.karasiq.scalajsbundler
 
 import java.io.IOException
-import java.nio.file.{Path, _}
 import java.nio.file.attribute.BasicFileAttributes
+import java.nio.file.{Path, _}
 
 import com.karasiq.scalajsbundler.ScalaJSBundler.Bundle
 import sbt.Keys._
@@ -50,10 +50,11 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     lazy val baseScalaJsBundlerSettings: Seq[Def.Setting[_]] = Seq(
       scalaJsBundlerAssets := Nil,
       scalaJsBundlerDest := resourceManaged.value / "webapp",
-      scalaJsBundlerCompile <<= (scalaJsBundlerAssets, scalaJsBundlerDest).map { (src, dest) ⇒
+      scalaJsBundlerCompile <<= (scalaJsBundlerAssets, scalaJsBundlerDest, streams).map { (src, dest, streams) ⇒
+        streams.log("Compiling Scala.js assets")
         clearDirectory(dest.toPath)
         val compiler = new ScalaJSBundleCompiler
-        src.foreach { case Bundle(page, contents) ⇒
+        src.foreach { case Bundle(page, contents @ _*) ⇒
           compiler.createHtml(dest.toString, page, contents)
         }
         fileList(dest.toPath)
