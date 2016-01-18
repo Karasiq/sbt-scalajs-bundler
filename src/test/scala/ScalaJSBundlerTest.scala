@@ -3,8 +3,8 @@ import java.nio.file._
 import java.nio.file.attribute.BasicFileAttributes
 
 import com.karasiq.scalajsbundler.ScalaJSBundleCompiler
-import com.karasiq.scalajsbundler.ScalaJSBundlerPlugin.autoImport._
 import com.karasiq.scalajsbundler.compilers.AssetCompilers
+import com.karasiq.scalajsbundler.dsl._
 import org.scalatest.{FlatSpec, Matchers}
 import sbt.url
 

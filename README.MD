@@ -9,7 +9,7 @@ addSbtPlugin("com.github.karasiq" % "sbt-scalajs-bundler" % "1.0.1")
 
 Write configuration in `build.sbt`:
 ```scala
-import com.github.karasiq.scalajsbundler.ScalaJSBundler._
+import com.github.karasiq.scalajsbundler.dsl.{Script, _}
 
 // Enable bundler plugin
 enablePlugins(ScalaJSBundlerPlugin)
