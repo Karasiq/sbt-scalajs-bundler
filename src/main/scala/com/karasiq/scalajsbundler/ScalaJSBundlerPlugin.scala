@@ -6,6 +6,7 @@ import java.nio.file.{Path, _}
 
 import com.karasiq.scalajsbundler.ScalaJSBundler.Bundle
 import com.karasiq.scalajsbundler.compilers.AssetCompilers
+import com.karasiq.scalajsbundler.dsl.BundlerDsl
 import sbt.Keys._
 import sbt._
 import sbt.plugins.JvmPlugin
@@ -43,7 +44,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     buffer.result()
   }
 
-  object autoImport {
+  object autoImport extends BundlerDsl {
     val scalaJsBundlerAssets = settingKey[Seq[Bundle]]("Scala.js bundler resources")
     val scalaJsBundlerDest = settingKey[File]("Scala.js bundler output directory")
     val scalaJsBundlerCompilers = settingKey[AssetCompilers]("Scala.js asset compilers")

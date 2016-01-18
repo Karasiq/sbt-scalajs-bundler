@@ -3,52 +3,54 @@ import java.nio.file._
 import java.nio.file.attribute.BasicFileAttributes
 
 import com.karasiq.scalajsbundler.ScalaJSBundleCompiler
-import com.karasiq.scalajsbundler.ScalaJSBundler._
+import com.karasiq.scalajsbundler.ScalaJSBundlerPlugin.autoImport._
 import com.karasiq.scalajsbundler.compilers.AssetCompilers
 import org.scalatest.{FlatSpec, Matchers}
+import sbt.url
 
 class ScalaJSBundlerTest extends FlatSpec with Matchers {
   val output = "target/test-output"
 
   "Assets compiler" should "compile assets" in {
-    val script = PageScript(StringAsset(
-      """
-        |function hello(name) {
-        |  alert('Hello, ' + name);
-        |}
-        |$(function() {
-        |  hello('New user');
-        |});
-      """.stripMargin))
+    val assets = Seq(
+      // jQuery
+      Script from url("https://code.jquery.com/jquery-1.12.0.js"),
 
-    val style = PageStyle(StringAsset(
-      """
-        |.hello-world {
-        | font-family: Gill Sans, Verdana;
-        |	font-size: 11px;
-        |	line-height: 14px;
-        |	text-transform: uppercase;
-        |	letter-spacing: 2px;
-        |	font-weight: bold;
-        |};
-      """.stripMargin))
+      // Bootstrap
+      Static("fonts/fontawesome-webfont.woff2")
+        .withMime("application/font-woff2") from url("https://fortawesome.github.io/Font-Awesome/assets/font-awesome/fonts/fontawesome-webfont.woff2?v=4.5.0"),
 
-    val html = PageHtml(StringAsset(
-      """
-        |<head>
-        |<title>Hello world</title>
-        |<generated-assets/>
-        |</head>
-        |<body>
-        |<h1 class="hello-world">Hello world!</h1>
-        |</body>
-      """.stripMargin))
+      Style from url("https://raw.githubusercontent.com/twbs/bootstrap/v3.3.6/dist/css/bootstrap.css"),
 
-    val jquery = PageScript(WebAsset("https://code.jquery.com/jquery-1.12.0.js"))
-
-    val font = PageFile("fonts/fontawesome-webfont", WebAsset("https://fortawesome.github.io/Font-Awesome/assets/font-awesome/fonts/fontawesome-webfont.woff2?v=4.5.0"), "woff2", "application/font-woff2")
-
-    val bootstrap = PageStyle(WebAsset("https://raw.githubusercontent.com/twbs/bootstrap/v3.3.6/dist/css/bootstrap.css"))
+      // Page static files
+      Script from """
+                  |function hello(name) {
+                  |  alert('Hello, ' + name);
+                  |}
+                  |$(function() {
+                  |  hello('New user');
+                  |});
+                """.stripMargin,
+      Style from """
+                   |.hello-world {
+                   | font-family: Gill Sans, Verdana;
+                   |	font-size: 11px;
+                   |	line-height: 14px;
+                   |	text-transform: uppercase;
+                   |	letter-spacing: 2px;
+                   |	font-weight: bold;
+                   |};
+                 """.stripMargin,
+      Html from """
+                  |<head>
+                  |<title>Hello world</title>
+                  |<generated-assets/>
+                  |</head>
+                  |<body>
+                  |<h1 class="hello-world">Hello world!</h1>
+                  |</body>
+                """.stripMargin
+    )
 
     Files.walkFileTree(Paths.get(output), new SimpleFileVisitor[Path] {
       override def postVisitDirectory(dir: Path, exc: IOException): FileVisitResult = {
@@ -62,6 +64,6 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
       }
     })
     val compiler = new ScalaJSBundleCompiler
-    compiler.createHtml(AssetCompilers.default, output, "index", Seq(jquery, bootstrap, style, font, script, html))
+    compiler.createHtml(AssetCompilers.default, output, "index", assets)
   }
 }
