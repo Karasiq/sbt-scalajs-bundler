@@ -77,6 +77,12 @@ trait BundlerDsl {
     FileBuilder(FilenameUtils.removeExtension(name), FilenameUtils.getExtension(name))
   }
 
+  def Image(name: String): FileBuilder = {
+    Static(name)
+      .withExt("jpg")
+      .withMime("image/jpeg")
+  }
+
   final implicit class BuilderOps[+T <: PageContent](val builder: ContentBuilder[T]) {
     def from[S](source: S)(implicit ev: S ⇒ Asset): T = {
       builder.fromAsset(source)
