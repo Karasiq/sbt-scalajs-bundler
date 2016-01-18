@@ -79,7 +79,6 @@ trait BundlerDsl {
 
   def Image(name: String): FileBuilder = {
     Static(name)
-      .withExt("jpg")
       .withMime("image/jpeg")
   }
 
