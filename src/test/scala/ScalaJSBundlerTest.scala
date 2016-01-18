@@ -16,10 +16,11 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
       // jQuery
       Script from url("https://code.jquery.com/jquery-1.12.0.js"),
 
-      // Bootstrap
+      // Font awesome
       Static("fonts/fontawesome-webfont.woff2")
         .withMime("application/font-woff2") from url("https://fortawesome.github.io/Font-Awesome/assets/font-awesome/fonts/fontawesome-webfont.woff2?v=4.5.0"),
 
+      // Bootstrap
       Style from url("https://raw.githubusercontent.com/twbs/bootstrap/v3.3.6/dist/css/bootstrap.css"),
 
       // Page static files
@@ -42,6 +43,8 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
                    |};
                  """.stripMargin,
       Html from """
+                  |<!DOCTYPE html>
+                  |<html>
                   |<head>
                   |<title>Hello world</title>
                   |<generated-assets/>
@@ -49,6 +52,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
                   |<body>
                   |<h1 class="hello-world">Hello world!</h1>
                   |</body>
+                  |</html>
                 """.stripMargin
     )
 
