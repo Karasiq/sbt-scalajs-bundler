@@ -12,21 +12,6 @@ import org.jsoup.Jsoup
 import scala.util.control.Exception
 
 class ScalaJSBundleCompiler {
-  private def compileAssets(compilers: AssetCompilers, contents: Seq[PageTypedContent]): String = {
-    require(contents.forall(_.mime == contents.head.mime))
-    val precompiler = contents.head.mime match {
-      case "text/html" ⇒
-        HtmlConcatCompiler
-
-      case "text/css" | "text/javascript" ⇒
-        ConcatCompiler
-
-      case _ ⇒
-        compilers(contents.head.mime)
-    }
-    precompiler.compile(contents)
-  }
-
   private def writeAsset(asset: Asset, file: File): Unit = {
     require(file.getParentFile.isDirectory || file.getParentFile.mkdirs(), s"Not a directory: ${file.getParentFile}")
     val reader = asset.content()
@@ -43,34 +28,46 @@ class ScalaJSBundleCompiler {
       .mkString("/", "/", "")
   }
 
-  private def makeHtml(compilers: AssetCompilers, pages: Seq[Seq[PageHtml]], assetsHtml: String): PageHtml = {
+  private def makeHtml(compilers: AssetCompilers, pages: Seq[PageHtml], assetsHtml: String): PageHtml = {
     def withAssets(html: String): String = {
       val page = Jsoup.parse(html)
       page.head().append(assetsHtml)
       page.outerHtml()
     }
 
-    Html from compilers("text/html").compile(Seq(Html from withAssets(HtmlConcatCompiler.concat(pages.map { pages ⇒
-      compileAssets(compilers, pages)
+    Html from compilers("text/html").compile(Seq(Html from withAssets(HtmlConcatCompiler.concat(pages.map {
+      case PageHtml(asset, _, "text/html") ⇒
+        asset.asString
+
+      case s @ PageHtml(_, _, mime) ⇒
+        compilers(mime).compile(Seq(s))
     }))))
   }
 
-  private def makeScript(compilers: AssetCompilers, scripts: Seq[Seq[PageScript]]): PageScript = {
-    Script from compilers("text/javascript").compile(Seq(Script from ConcatCompiler.concat(scripts.map { scripts ⇒
-      compileAssets(compilers, scripts)
+  private def makeScript(compilers: AssetCompilers, scripts: Seq[PageScript]): PageScript = {
+    Script from compilers("text/javascript").compile(Seq(Script from ConcatCompiler.concat(scripts.map {
+      case PageScript(asset, _, "text/javascript") ⇒
+        asset.asString
+
+      case s @ PageScript(_, _, mime) ⇒
+        compilers(mime).compile(Seq(s))
     })))
   }
 
-  private def makeStyle(compilers: AssetCompilers, styles: Seq[Seq[PageStyle]]): PageStyle = {
-    Style from compilers("text/css").compile(Seq(Style from ConcatCompiler.concat(styles.map { styles ⇒
-      compileAssets(compilers, styles)
+  private def makeStyle(compilers: AssetCompilers, styles: Seq[PageStyle]): PageStyle = {
+    Style from compilers("text/css").compile(Seq(Style from ConcatCompiler.concat(styles.map {
+      case PageStyle(asset, _, "text/css") ⇒
+        asset.asString
+
+      case s @ PageStyle(_, _, mime) ⇒
+        compilers(mime).compile(Seq(s))
     })))
   }
 
   def createHtml(compilers: AssetCompilers, outputDir: String, name: String, contents: Seq[PageContent]): Unit = {
     require(new File(outputDir).isDirectory || new File(outputDir).mkdirs(), s"Not a directory: $outputDir")
-    val script = makeScript(compilers, contents.collect { case s: PageScript ⇒ s }.groupBy(_.mime).values.toSeq)
-    val style = makeStyle(compilers, contents.collect { case s: PageStyle ⇒ s }.groupBy(_.mime).values.toSeq)
+    val script = makeScript(compilers, contents.collect { case s: PageScript ⇒ s })
+    val style = makeStyle(compilers, contents.collect { case s: PageStyle ⇒ s })
     val static = contents.collect { case f: PageFile ⇒ f }
     val assetsHtml = new StringWriter(256)
 
@@ -92,7 +89,7 @@ class ScalaJSBundleCompiler {
       writeAsset(asset, new File(s"$outputDir/$name.$ext"))
     }
 
-    val html = makeHtml(compilers, contents.collect { case h: PageHtml ⇒ h }.groupBy(_.mime).values.toSeq, assetsHtml.toString)
+    val html = makeHtml(compilers, contents.collect { case h: PageHtml ⇒ h }, assetsHtml.toString)
     writeAsset(html.asset, new File(s"$outputDir/$name.html"))
   }
 }
