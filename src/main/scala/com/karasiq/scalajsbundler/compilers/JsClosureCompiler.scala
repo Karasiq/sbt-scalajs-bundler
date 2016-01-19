@@ -5,7 +5,7 @@ import com.karasiq.scalajsbundler.ScalaJSBundler.PageTypedContent
 
 import scala.collection.JavaConversions._
 
-object JsClosureCompiler extends AssetCompiler {
+class JsClosureCompiler extends AssetCompiler {
   //noinspection ScalaDeprecation
   override def compile(contents: Seq[PageTypedContent]): String = {
     val compiler = new Compiler()

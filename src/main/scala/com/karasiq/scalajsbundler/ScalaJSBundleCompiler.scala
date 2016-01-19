@@ -4,64 +4,95 @@ import java.io._
 import java.util.UUID
 
 import com.karasiq.scalajsbundler.ScalaJSBundler._
-import com.karasiq.scalajsbundler.compilers.AssetCompilers
+import com.karasiq.scalajsbundler.compilers.{AssetCompilers, ConcatCompiler, HtmlConcatCompiler}
+import com.karasiq.scalajsbundler.dsl._
 import org.apache.commons.io.IOUtils
+import org.jsoup.Jsoup
 
 import scala.util.control.Exception
 
 class ScalaJSBundleCompiler {
   private def compileAssets(compilers: AssetCompilers, contents: Seq[PageTypedContent]): String = {
     require(contents.forall(_.mime == contents.head.mime))
-    compilers(contents.head.mime).compile(contents)
+    val precompiler = contents.head.mime match {
+      case "text/html" ⇒
+        HtmlConcatCompiler
+
+      case "text/css" | "text/javascript" ⇒
+        ConcatCompiler
+
+      case _ ⇒
+        compilers(contents.head.mime)
+    }
+    precompiler.compile(contents)
   }
 
   private def writeAsset(asset: Asset, file: File): Unit = {
-    require(file.getParentFile.isDirectory || file.getParentFile.mkdirs(), "Not a directory")
+    require(file.getParentFile.isDirectory || file.getParentFile.mkdirs(), s"Not a directory: ${file.getParentFile}")
     val reader = asset.content()
     val outputStream = new FileOutputStream(file)
-    Exception.allCatch.andFinally { outputStream.close() } {
+    Exception.allCatch.andFinally(IOUtils.closeQuietly(outputStream)) {
       IOUtils.write(IOUtils.toByteArray(reader), outputStream)
     }
   }
 
   private def makeUrl(file: File): String = {
-    file.toString.split("[\\\\/]").mkString("/", "/", "")
+    file.toString
+      .split("[\\\\/]")
+      .filter(_.nonEmpty)
+      .mkString("/", "/", "")
+  }
+
+  private def makeHtml(compilers: AssetCompilers, pages: Seq[Seq[PageHtml]], assetsHtml: String): PageHtml = {
+    def withAssets(html: String): String = {
+      val page = Jsoup.parse(html)
+      page.head().append(assetsHtml)
+      page.outerHtml()
+    }
+
+    Html from compilers("text/html").compile(Seq(Html from withAssets(HtmlConcatCompiler.concat(pages.map { pages ⇒
+      compileAssets(compilers, pages)
+    }))))
+  }
+
+  private def makeScript(compilers: AssetCompilers, scripts: Seq[Seq[PageScript]]): PageScript = {
+    Script from compilers("text/javascript").compile(Seq(Script from ConcatCompiler.concat(scripts.map { scripts ⇒
+      compileAssets(compilers, scripts)
+    })))
+  }
+
+  private def makeStyle(compilers: AssetCompilers, styles: Seq[Seq[PageStyle]]): PageStyle = {
+    Style from compilers("text/css").compile(Seq(Style from ConcatCompiler.concat(styles.map { styles ⇒
+      compileAssets(compilers, styles)
+    })))
   }
 
   def createHtml(compilers: AssetCompilers, outputDir: String, name: String, contents: Seq[PageContent]): Unit = {
-    require(new File(outputDir).isDirectory || new File(outputDir).mkdirs(), "Not a directory")
-
-    val scripts = contents.collect { case s: PageScript ⇒ s }.groupBy(_.mime).mapValues { scripts ⇒
-      PageScript(StringAsset(compileAssets(compilers, scripts)), scripts.head.ext, scripts.head.mime)
-    }
-
-    val styles = contents.collect { case s: PageStyle ⇒ s }.groupBy(_.mime).mapValues { styles ⇒
-      PageStyle(StringAsset(compileAssets(compilers, styles)), styles.head.ext, styles.head.mime)
-    }
-
+    require(new File(outputDir).isDirectory || new File(outputDir).mkdirs(), s"Not a directory: $outputDir")
+    val script = makeScript(compilers, contents.collect { case s: PageScript ⇒ s }.groupBy(_.mime).values.toSeq)
+    val style = makeStyle(compilers, contents.collect { case s: PageStyle ⇒ s }.groupBy(_.mime).values.toSeq)
     val static = contents.collect { case f: PageFile ⇒ f }
-
     val assetsHtml = new StringWriter(256)
 
-    for (PageScript(asset, ext, mime) <- scripts.values) {
-      val file = new File(s"scripts/${UUID.randomUUID()}.$ext")
-      writeAsset(asset, new File(s"$outputDir/$file"))
-      assetsHtml.append("<script type=\"" + mime + "\" src=\"" + makeUrl(file) + "\"></script>")
+    script match {
+      case PageScript(asset, ext, mime) ⇒
+        val file = new File(s"scripts/${UUID.randomUUID()}.$ext")
+        writeAsset(asset, new File(s"$outputDir/$file"))
+        assetsHtml.append("<script type=\"" + mime + "\" src=\"" + makeUrl(file) + "\"></script>")
     }
 
-    for (PageStyle(asset, ext, mime) <- styles.values) {
-      val file = new File(s"styles/${UUID.randomUUID()}.$ext")
-      writeAsset(asset, new File(s"$outputDir/$file"))
-      assetsHtml.append("<link rel=\"stylesheet\" href=\"" + makeUrl(file) + "\"/>")
+    style match {
+      case PageStyle(asset, ext, mime) ⇒
+        val file = new File(s"styles/${UUID.randomUUID()}.$ext")
+        writeAsset(asset, new File(s"$outputDir/$file"))
+        assetsHtml.append("<link rel=\"stylesheet\" href=\"" + makeUrl(file) + "\"/>")
     }
 
     for (PageFile(name, asset, ext, mime) <- static) {
       writeAsset(asset, new File(s"$outputDir/$name.$ext"))
     }
 
-    val page = compileAssets(compilers, contents.collect { case h: PageHtml ⇒ h })
-      .replaceAllLiterally("<generated-assets/>", assetsHtml.toString)
-
-    writeAsset(StringAsset(page), new File(s"$outputDir/$name.html"))
+    val html = makeHtml(compilers, contents.collect { case h: PageHtml ⇒ h }.groupBy(_.mime).values.toSeq, assetsHtml.toString)
+    writeAsset(html.asset, new File(s"$outputDir/$name.html"))
   }
 }

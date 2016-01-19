@@ -4,7 +4,7 @@ SBT plugin for auto compilation of web assets (js, css, html)
 # How to use
 Add line in your `plugins.sbt`:
 ```scala
-addSbtPlugin("com.github.karasiq" % "sbt-scalajs-bundler" % "1.0.1")
+addSbtPlugin("com.github.karasiq" % "sbt-scalajs-bundler" % "1.0.2")
 ```
 
 Write configuration in `build.sbt`:
@@ -33,18 +33,14 @@ scalaJsBundlerAssets in Compile += Bundle("index",
 
   // Static files
   Html from file("frontend/webapp/html/index.html"),
-  Style from file("frontend/webapp/css/style.css"),
+  Script.withMime("text/x-coffeescript") from file("frontend/webapp/scripts/script.coffee"),
+  Style.withMime("text/less") from file("frontend/webapp/css/style.less"), // Requires less4j library in classpath
   Image("favicon.ico").withMime("image/x-icon") from file("frontend/webapp/img/favicon.ico"),
 
   // Scala.js app
   Script from file("frontend/target/scala-2.11/your-app-frontend-opt.js"),
   Script from file("frontend/target/scala-2.11/your-app-frontend-launcher.js")
 )
-```
-
-Insert placeholder in your HTML file `<head>` section:
-```html
-<generated-assets/>
 ```
 
 # Examples

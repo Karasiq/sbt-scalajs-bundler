@@ -4,7 +4,7 @@ name := "sbt-scalajs-bundler"
 
 isSnapshot := false
 
-version := "1.0.1"
+version := "1.0.2"
 
 scalacOptions ++= Seq("-target:jvm-1.7")
 
@@ -12,11 +12,14 @@ sbtPlugin := true
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.4" % "test",
+  "commons-io" % "commons-io" % "2.4",
+  "org.scalaj" %% "scalaj-http" % "2.2.1",
+  "org.jsoup" % "jsoup" % "1.8.3",
   "com.google.javascript" % "closure-compiler" % "v20151216" % "provided",
   "com.yahoo.platform.yui" % "yuicompressor" % "2.4.8",
-  "commons-io" % "commons-io" % "2.4",
   "com.googlecode.htmlcompressor" % "htmlcompressor" % "1.5.2",
-  "org.scalaj" %% "scalaj-http" % "2.2.1"
+  "de.neuland-bfi" % "jade4j" % "1.1.4" % "provided",
+  "com.github.sommeri" % "less4j" % "1.15.4" % "provided"
 )
 
 publishMavenStyle := true

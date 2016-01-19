@@ -32,6 +32,39 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
                   |  hello('New user');
                   |});
                 """.stripMargin,
+      Script
+        .withExt("coffee")
+        .withMime("text/x-coffeescript") from
+          """
+            |# Assignment:
+            |number   = 42
+            |opposite = true
+            |
+            |# Conditions:
+            |number = -42 if opposite
+            |
+            |# Functions:
+            |square = (x) -> x * x
+            |
+            |# Arrays:
+            |list = [1, 2, 3, 4, 5]
+            |
+            |# Objects:
+            |math =
+            |  root:   Math.sqrt
+            |  square: square
+            |  cube:   (x) -> x * square x
+            |
+            |# Splats:
+            |race = (winner, runners...) ->
+            |  print winner, runners
+            |
+            |# Existence:
+            |alert "I knew it!" if elvis?
+            |
+            |# Array comprehensions:
+            |cubes = (math.cube num for num in list)
+          """.stripMargin,
       Style from """
                    |.hello-world {
                    | font-family: Gill Sans, Verdana;
@@ -42,17 +75,29 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
                    |	font-weight: bold;
                    |};
                  """.stripMargin,
+      Style
+        .withExt("less")
+        .withMime("text/less") from
+        """
+          |.class { width: (1 + 1) }
+        """.stripMargin,
       Html from """
                   |<!DOCTYPE html>
                   |<html>
                   |<head>
                   |<title>Hello world</title>
-                  |<generated-assets/>
                   |</head>
                   |<body>
                   |<h1 class="hello-world">Hello world!</h1>
                   |</body>
                   |</html>
+                """.stripMargin,
+      Html
+        .withMime("text/x-jade-template") from """
+                  |html
+                  |  head
+                  |  body
+                  |    h2.hello-jade Hello jade!
                 """.stripMargin
     )
 

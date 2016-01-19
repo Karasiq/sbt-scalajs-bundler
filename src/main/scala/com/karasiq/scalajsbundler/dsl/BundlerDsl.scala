@@ -3,6 +3,7 @@ package com.karasiq.scalajsbundler.dsl
 import java.io.File
 import java.net.URL
 import java.nio.file.Path
+import javax.activation.MimetypesFileTypeMap
 
 import com.karasiq.scalajsbundler.ScalaJSBundler._
 import org.apache.commons.io.FilenameUtils
@@ -15,37 +16,26 @@ trait BundlerDsl {
       def fromAsset(asset: Asset): T
     }
 
-    sealed trait TypedContentBuilder[+T <: PageTypedContent, B] extends ContentBuilder[T] {
+    sealed trait TypedContentBuilder[+T <: PageTypedContent, +B] extends ContentBuilder[T] {
       def withExt(ext: String): B
       def withMime(mime: String): B
     }
 
-    sealed trait StaticContentBuilder[+T <: PageStaticContent, B] extends ContentBuilder[T] {
+    sealed trait StaticContentBuilder[+T <: PageStaticContent, +B] extends ContentBuilder[T] {
       def withName(name: String): B
     }
 
-    case class ScriptBuilder(ext: String = "js", mime: String = "text/javascript") extends TypedContentBuilder[PageScript, ScriptBuilder] {
-      override def withExt(ext: String): ScriptBuilder = copy(ext = ext)
+    case class InlineBuilder[+C <: PageTypedContent](ext: String, mime: String, f: (Asset, String, String) ⇒ C) extends TypedContentBuilder[C, InlineBuilder[C]] {
+      override def withExt(ext: String): InlineBuilder[C] = {
+        val map = new MimetypesFileTypeMap()
+        copy(ext = ext, mime = map.getContentType(s"input.$ext"))
+      }
 
-      override def withMime(mime: String): ScriptBuilder = copy(mime = mime)
+      override def withMime(mime: String): InlineBuilder[C] = {
+        copy(mime = mime)
+      }
 
-      override def fromAsset(asset: Asset): PageScript = PageScript(asset, this.ext, this.mime)
-    }
-
-    case class StyleBuilder(ext: String = "css", mime: String = "text/css") extends TypedContentBuilder[PageStyle, StyleBuilder] {
-      override def withExt(ext: String): StyleBuilder = copy(ext = ext)
-
-      override def withMime(mime: String): StyleBuilder = copy(mime = mime)
-
-      override def fromAsset(asset: Asset): PageStyle = PageStyle(asset, this.ext, this.mime)
-    }
-
-    case class HtmlBuilder(ext: String = "html", mime: String = "text/html") extends TypedContentBuilder[PageHtml, HtmlBuilder] {
-      override def withExt(ext: String): HtmlBuilder = copy(ext = ext)
-
-      override def withMime(mime: String): HtmlBuilder = copy(mime = mime)
-
-      override def fromAsset(asset: Asset): PageHtml = PageHtml(asset, this.ext, this.mime)
+      override def fromAsset(asset: Asset): C = f(asset, ext, mime)
     }
 
     case class FileBuilder(name: String, ext: String, mime: String = "application/octet-stream") extends TypedContentBuilder[PageFile, FileBuilder] with StaticContentBuilder[PageFile, FileBuilder] {
@@ -61,20 +51,21 @@ trait BundlerDsl {
 
   import PageContentBuilders._
 
-  def Script: ScriptBuilder = {
-    ScriptBuilder()
+  def Script: InlineBuilder[PageScript] = {
+    InlineBuilder("js", "text/javascript", PageScript.apply)
   }
 
-  def Style: StyleBuilder = {
-    StyleBuilder()
+  def Style: InlineBuilder[PageStyle] = {
+    InlineBuilder("css", "text/css", PageStyle.apply)
   }
 
-  def Html: HtmlBuilder = {
-    HtmlBuilder()
+  def Html: InlineBuilder[PageHtml] = {
+    InlineBuilder("html", "text/html", PageHtml.apply)
   }
 
   def Static(name: String): FileBuilder = {
-    FileBuilder(FilenameUtils.removeExtension(name), FilenameUtils.getExtension(name))
+    FileBuilder(FilenameUtils.removeExtension(name), "")
+      .withExt(FilenameUtils.getExtension(name))
   }
 
   def Image(name: String): FileBuilder = {
