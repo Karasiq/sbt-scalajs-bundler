@@ -87,7 +87,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
                   |<head>
                   |<title>Hello world</title>
                   |</head>
-                  |<body>
+                  |<body style='font-family: Geneva, Arial, Helvetica, sans-serif'>
                   |<h1 class="hello-world">Hello world!</h1>
                   |</body>
                   |</html>
@@ -96,7 +96,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
         .withMime("text/x-jade-template") from """
                   |html
                   |  head
-                  |  body
+                  |  body(style='background: url(/background.jpg);')
                   |    h2.hello-jade Hello jade!
                 """.stripMargin
     )
