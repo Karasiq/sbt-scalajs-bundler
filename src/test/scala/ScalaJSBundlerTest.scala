@@ -1,15 +1,25 @@
-import java.io.IOException
+import java.io.{FileInputStream, IOException}
 import java.nio.file._
 import java.nio.file.attribute.BasicFileAttributes
 
 import com.karasiq.scalajsbundler.ScalaJSBundleCompiler
 import com.karasiq.scalajsbundler.compilers.AssetCompilers
 import com.karasiq.scalajsbundler.dsl._
+import org.apache.commons.io.IOUtils
 import org.scalatest.{FlatSpec, Matchers}
 import sbt.url
 
+import scala.util.Try
+
 class ScalaJSBundlerTest extends FlatSpec with Matchers {
   val output = "target/test-output"
+
+  def readFile(file: String): String = {
+    val inputStream = new FileInputStream(file)
+    val result = Try(IOUtils.toString(inputStream))
+    IOUtils.closeQuietly(inputStream)
+    result.getOrElse("")
+  }
 
   "Assets compiler" should "compile assets" in {
     val assets = Seq(
@@ -114,5 +124,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
     })
     val compiler = new ScalaJSBundleCompiler
     compiler.createHtml(AssetCompilers.default, output, "index", assets, inline = true)
+    readFile(s"$output/index.html").hashCode shouldBe 721259096
+    Files.size(Paths.get(s"$output/fonts/fontawesome-webfont.woff2")) shouldBe 66624
   }
 }
