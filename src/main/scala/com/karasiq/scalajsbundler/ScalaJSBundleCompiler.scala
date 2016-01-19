@@ -16,8 +16,8 @@ class ScalaJSBundleCompiler {
     require(file.getParentFile.isDirectory || file.getParentFile.mkdirs(), s"Not a directory: ${file.getParentFile}")
     val reader = asset.content()
     val outputStream = new FileOutputStream(file)
-    Exception.allCatch.andFinally(IOUtils.closeQuietly(outputStream)) {
-      IOUtils.write(IOUtils.toByteArray(reader), outputStream)
+    Exception.allCatch.andFinally { IOUtils.closeQuietly(outputStream); IOUtils.closeQuietly(reader) } {
+      IOUtils.copyLarge(reader, outputStream)
     }
   }
 
@@ -64,7 +64,7 @@ class ScalaJSBundleCompiler {
     })))
   }
 
-  def createHtml(compilers: AssetCompilers, outputDir: String, name: String, contents: Seq[PageContent]): Unit = {
+  def createHtml(compilers: AssetCompilers, outputDir: String, name: String, contents: Seq[PageContent], inline: Boolean): Unit = {
     require(new File(outputDir).isDirectory || new File(outputDir).mkdirs(), s"Not a directory: $outputDir")
     val script = makeScript(compilers, contents.collect { case s: PageScript ⇒ s })
     val style = makeStyle(compilers, contents.collect { case s: PageStyle ⇒ s })
@@ -72,6 +72,9 @@ class ScalaJSBundleCompiler {
     val assetsHtml = new StringWriter(256)
 
     script match {
+      case PageScript(asset, _, mime) if inline ⇒
+        assetsHtml.append("<script type=\"" + mime + "\">" + asset.asString + "</script>")
+
       case PageScript(asset, ext, mime) ⇒
         val file = new File(s"scripts/${UUID.randomUUID()}.$ext")
         writeAsset(asset, new File(s"$outputDir/$file"))
@@ -79,6 +82,9 @@ class ScalaJSBundleCompiler {
     }
 
     style match {
+      case PageStyle(asset, _, mime) if inline ⇒
+        assetsHtml.append("<style type=\"" + mime + "\">" + asset.asString + "</style>")
+
       case PageStyle(asset, ext, mime) ⇒
         val file = new File(s"styles/${UUID.randomUUID()}.$ext")
         writeAsset(asset, new File(s"$outputDir/$file"))

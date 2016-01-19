@@ -26,10 +26,10 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
       // Page static files
       Script from """
                   |function hello(name) {
-                  |  alert('Hello, ' + name);
+                  |  alert('Hello ' + name);
                   |}
                   |$(function() {
-                  |  hello('New user');
+                  |  hello('JavaScript!');
                   |});
                 """.stripMargin,
       Script
@@ -113,6 +113,6 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
       }
     })
     val compiler = new ScalaJSBundleCompiler
-    compiler.createHtml(AssetCompilers.default, output, "index", assets)
+    compiler.createHtml(AssetCompilers.default, output, "index", assets, inline = true)
   }
 }
