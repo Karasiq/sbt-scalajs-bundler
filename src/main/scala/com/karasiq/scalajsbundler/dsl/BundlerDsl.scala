@@ -6,6 +6,7 @@ import java.nio.file.Path
 import javax.activation.MimetypesFileTypeMap
 
 import com.karasiq.scalajsbundler.ScalaJSBundler._
+import com.karasiq.scalajsbundler.compilers.PredefinedMimeTypes
 import org.apache.commons.io.FilenameUtils
 
 import scala.language.implicitConversions
@@ -86,4 +87,6 @@ trait BundlerDsl {
   implicit def fileToAsset(file: File): Asset = FileAsset(file.toString)
 
   implicit def pathToAsset(path: Path): Asset = FileAsset(path.toString)
+
+  object Mimes extends PredefinedMimeTypes
 }

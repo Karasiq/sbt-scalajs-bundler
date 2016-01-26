@@ -33,9 +33,9 @@ scalaJsBundlerAssets in Compile += Bundle("index",
 
   // Static files
   Html from file("frontend/webapp/html/index.html"),
-  Script.withMime("text/x-coffeescript") from file("frontend/webapp/scripts/script.coffee"),
-  Style.withMime("text/less") from file("frontend/webapp/css/style.less"), // Requires less4j library in classpath
-  Image("favicon.ico").withMime("image/x-icon") from file("frontend/webapp/img/favicon.ico"),
+  Script.withMime(Mimes.coffeescript) from file("frontend/webapp/scripts/script.coffee"),
+  Style.withMime(Mimes.less) from file("frontend/webapp/css/style.less"), // Requires less4j library in classpath
+  Image("favicon.ico").withMime(Mimes.ico) from file("frontend/webapp/img/favicon.ico"),
 
   // Scala.js app
   Script from file("frontend/target/scala-2.11/your-app-frontend-opt.js"),

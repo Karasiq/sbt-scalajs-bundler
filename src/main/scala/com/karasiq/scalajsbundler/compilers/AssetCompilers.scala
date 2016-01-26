@@ -18,6 +18,8 @@ case class AssetCompilers(pf: PartialFunction[String, AssetCompiler]) extends An
 
 
 object AssetCompilers {
+  private object Mimes extends PredefinedMimeTypes
+
   private def classExists(className: String): Boolean = {
     Try(Class.forName(className, false, getClass.getClassLoader)).isSuccess
   }
@@ -28,25 +30,25 @@ object AssetCompilers {
   }
 
   def default: AssetCompilers = AssetCompilers {
-    case "text/x-coffeescript" ⇒
+    case Mimes.coffeescript ⇒
       CoffeeScriptCompiler
 
-    case "text/less" if classExists("com.github.sommeri.less4j.core.DefaultLessCompiler") ⇒
+    case Mimes.less if classExists("com.github.sommeri.less4j.core.DefaultLessCompiler") ⇒
       newCompiler("Less4jCompiler")
 
-    case "text/javascript" if classExists("com.google.javascript.jscomp.Compiler") ⇒
+    case Mimes.javascript if classExists("com.google.javascript.jscomp.Compiler") ⇒
       newCompiler("JsClosureCompiler")
 
-    case "text/javascript" if classExists("com.yahoo.platform.yui.compressor.JavaScriptCompressor") ⇒
+    case Mimes.javascript if classExists("com.yahoo.platform.yui.compressor.JavaScriptCompressor") ⇒
       newCompiler("JsYuiCompiler")
 
-    case "text/css" if classExists("com.yahoo.platform.yui.compressor.CssCompressor") ⇒
+    case Mimes.css if classExists("com.yahoo.platform.yui.compressor.CssCompressor") ⇒
       newCompiler("CssYuiCompiler")
 
-    case "text/html" if classExists("com.googlecode.htmlcompressor.compressor.HtmlCompressor") ⇒
+    case Mimes.html if classExists("com.googlecode.htmlcompressor.compressor.HtmlCompressor") ⇒
       newCompiler("HtmlGoogleCompiler")
 
-    case "text/x-jade-template" if classExists("de.neuland.jade4j.Jade4J") ⇒
+    case Mimes.jade if classExists("de.neuland.jade4j.Jade4J") ⇒
       newCompiler("Jade4jCompiler")
   }
 }

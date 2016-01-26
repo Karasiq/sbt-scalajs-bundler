@@ -2,11 +2,14 @@ package com.karasiq.scalajsbundler
 
 import java.io._
 
+import com.karasiq.scalajsbundler.compilers.PredefinedMimeTypes
 import org.apache.commons.io.IOUtils
 
 import scala.util.control.Exception
 
 object ScalaJSBundler {
+  private object Mimes extends PredefinedMimeTypes
+
   trait Asset {
     def content(): InputStream
 
@@ -50,19 +53,19 @@ object ScalaJSBundler {
     def name: String
   }
 
-  case class PageFile(name: String, asset: Asset, ext: String, mime: String = "application/octet-stream") extends PageStaticContent with PageTypedContent
+  case class PageFile(name: String, asset: Asset, ext: String, mime: String = Mimes.`octet-stream`) extends PageStaticContent with PageTypedContent
 
   object PageImage {
-    def apply(name: String, asset: Asset, ext: String = "jpg", mime: String = "image/jpeg"): PageFile = {
+    def apply(name: String, asset: Asset, ext: String = "jpg", mime: String = Mimes.jpg): PageFile = {
       PageFile(name, asset, ext, mime)
     }
   }
 
-  case class PageScript(asset: Asset, ext: String = "js", mime: String = "text/javascript") extends PageTypedContent
+  case class PageScript(asset: Asset, ext: String = "js", mime: String = Mimes.javascript) extends PageTypedContent
 
-  case class PageStyle(asset: Asset, ext: String = "css", mime: String = "text/css") extends PageTypedContent
+  case class PageStyle(asset: Asset, ext: String = "css", mime: String = Mimes.css) extends PageTypedContent
 
-  case class PageHtml(asset: Asset, ext: String = "html", mime: String = "text/html") extends PageTypedContent
+  case class PageHtml(asset: Asset, ext: String = "html", mime: String = Mimes.html) extends PageTypedContent
 
   case class Bundle(name: String, contents: PageContent*)
 }

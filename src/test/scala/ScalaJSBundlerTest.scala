@@ -43,8 +43,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
                   |});
                 """.stripMargin,
       Script
-        .withExt("coffee")
-        .withMime("text/x-coffeescript") from
+        .withMime(Mimes.coffeescript) from
           """
             |# Assignment:
             |number   = 42
@@ -86,8 +85,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
                    |};
                  """.stripMargin,
       Style
-        .withExt("less")
-        .withMime("text/less") from
+        .withMime(Mimes.less) from
         """
           |.class { width: (1 + 1) }
         """.stripMargin,
@@ -103,7 +101,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
                   |</html>
                 """.stripMargin,
       Html
-        .withMime("text/x-jade-template") from """
+        .withMime(Mimes.jade) from """
                   |html
                   |  head
                   |  body(style='background: url(/background.jpg);')
