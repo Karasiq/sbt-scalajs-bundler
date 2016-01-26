@@ -4,7 +4,7 @@ name := "sbt-scalajs-bundler"
 
 isSnapshot := false
 
-version := "1.0.3"
+version := "1.0.4"
 
 scalacOptions ++= Seq("-target:jvm-1.7")
 
