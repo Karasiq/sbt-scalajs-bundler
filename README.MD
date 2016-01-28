@@ -1,7 +1,5 @@
-# sbt-scalajs-bundler
+# sbt-scalajs-bundler [![Build Status](https://travis-ci.org/Karasiq/sbt-scalajs-bundler.svg?branch=master)](https://travis-ci.org/Karasiq/sbt-scalajs-bundler)
 SBT plugin for auto compilation of web assets (js, css, html)
-
-[![Build Status](https://travis-ci.org/Karasiq/sbt-scalajs-bundler.svg?branch=master)](https://travis-ci.org/Karasiq/sbt-scalajs-bundler)
 
 # How to use
 Add line in your `plugins.sbt`:
