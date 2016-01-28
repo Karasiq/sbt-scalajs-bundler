@@ -19,7 +19,8 @@ libraryDependencies ++= Seq(
   "com.yahoo.platform.yui" % "yuicompressor" % "2.4.8",
   "com.googlecode.htmlcompressor" % "htmlcompressor" % "1.5.2",
   "de.neuland-bfi" % "jade4j" % "1.1.4" % "provided",
-  "com.github.sommeri" % "less4j" % "1.15.4" % "provided"
+  "com.github.sommeri" % "less4j" % "1.15.4" % "provided",
+  "org.mozilla" % "rhino" % "1.7.7" % "test"
 )
 
 publishMavenStyle := true

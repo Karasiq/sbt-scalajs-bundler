@@ -109,17 +109,20 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
                 """.stripMargin
     )
 
-    Files.walkFileTree(Paths.get(output), new SimpleFileVisitor[Path] {
-      override def postVisitDirectory(dir: Path, exc: IOException): FileVisitResult = {
-        Files.delete(dir)
-        FileVisitResult.CONTINUE
-      }
+    if (Files.isDirectory(Paths.get(output))) {
+      Files.walkFileTree(Paths.get(output), new SimpleFileVisitor[Path] {
+        override def postVisitDirectory(dir: Path, exc: IOException): FileVisitResult = {
+          Files.delete(dir)
+          FileVisitResult.CONTINUE
+        }
 
-      override def visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult = {
-        Files.delete(file)
-        FileVisitResult.CONTINUE
-      }
-    })
+        override def visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult = {
+          Files.delete(file)
+          FileVisitResult.CONTINUE
+        }
+      })
+    }
+    
     val compiler = new ScalaJSBundleCompiler
     compiler.createHtml(AssetCompilers.default, output, "index", assets, inline = true)
     readFile(s"$output/index.html").hashCode shouldBe 721259096
