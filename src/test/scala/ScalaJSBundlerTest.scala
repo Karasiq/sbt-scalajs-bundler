@@ -3,7 +3,7 @@ import java.nio.file._
 import java.nio.file.attribute.BasicFileAttributes
 
 import com.karasiq.scalajsbundler.ScalaJSBundleCompiler
-import com.karasiq.scalajsbundler.compilers.AssetCompilers
+import com.karasiq.scalajsbundler.compilers.{AssetCompilers, JsClosureCompiler}
 import com.karasiq.scalajsbundler.dsl._
 import org.apache.commons.io.IOUtils
 import org.scalatest.{FlatSpec, Matchers}
@@ -127,5 +127,13 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
     compiler.createHtml(AssetCompilers.default, output, "index", assets, inline = true)
     readFile(s"$output/index.html").hashCode shouldBe 721259096
     Files.size(Paths.get(s"$output/fonts/fontawesome-webfont.woff2")) shouldBe 66624
+
+    val fullOptCompilers = AssetCompilers {
+      case Mimes.javascript ⇒
+        new JsClosureCompiler(advanced = true)
+    } <<= AssetCompilers.default
+
+    compiler.createHtml(fullOptCompilers, output, "index_fullopt", assets, inline = true)
+    readFile(s"$output/index_fullopt.html").hashCode shouldBe 1899115641
   }
 }
