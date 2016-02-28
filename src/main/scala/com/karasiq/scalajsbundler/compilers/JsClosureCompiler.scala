@@ -1,7 +1,5 @@
 package com.karasiq.scalajsbundler.compilers
 
-import java.nio.charset.Charset
-
 import com.google.javascript.jscomp._
 import com.karasiq.scalajsbundler.ScalaJSBundler.PageTypedContent
 
@@ -28,7 +26,7 @@ class JsClosureCompiler(advanced: Boolean) extends AssetCompiler {
 
     // Compile input files
     val jsInput = contents.zipWithIndex.map { case (c, index) ⇒
-      SourceFile.fromInputStream(s"input_$index.js", c.asset.content(), Charset.forName("UTF-8"))
+      SourceFile.fromInputStream(s"input_$index.js", c.asset.content())
     }
     val result = compiler.compile(CommandLineRunner.getDefaultExterns, jsInput, options)
     assert(result.errors.isEmpty, "Compilation failed")

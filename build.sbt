@@ -15,7 +15,7 @@ libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "2.4",
   "org.scalaj" %% "scalaj-http" % "2.2.1",
   "org.jsoup" % "jsoup" % "1.8.3",
-  "com.google.javascript" % "closure-compiler" % "v20151216" % "provided",
+  "com.google.javascript" % "closure-compiler" % "v20130603" % "provided",
   "com.yahoo.platform.yui" % "yuicompressor" % "2.4.8",
   "com.googlecode.htmlcompressor" % "htmlcompressor" % "1.5.2",
   "de.neuland-bfi" % "jade4j" % "1.1.4" % "provided",

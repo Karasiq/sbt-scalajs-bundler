@@ -125,7 +125,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
     
     val compiler = new ScalaJSBundleCompiler
     compiler.createHtml(AssetCompilers.default, output, "index", assets, inline = true)
-    readFile(s"$output/index.html").hashCode shouldBe 721259096
+    readFile(s"$output/index.html").hashCode shouldBe -1691038017
     Files.size(Paths.get(s"$output/fonts/fontawesome-webfont.woff2")) shouldBe 66624
 
     val fullOptCompilers = AssetCompilers {
@@ -134,6 +134,6 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
     } <<= AssetCompilers.default
 
     compiler.createHtml(fullOptCompilers, output, "index_fullopt", assets, inline = true)
-    readFile(s"$output/index_fullopt.html").hashCode shouldBe 1899115641
+    readFile(s"$output/index_fullopt.html").hashCode shouldBe 1286016232
   }
 }
