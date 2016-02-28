@@ -9,8 +9,6 @@ addSbtPlugin("com.github.karasiq" % "sbt-scalajs-bundler" % "1.0.4")
 
 Write configuration in `build.sbt`:
 ```scala
-import com.karasiq.scalajsbundler.dsl.{Script, _}
-
 // Enable bundler plugin
 enablePlugins(ScalaJSBundlerPlugin)
 
@@ -18,29 +16,32 @@ enablePlugins(ScalaJSBundlerPlugin)
 scalaJsBundlerCompile in Compile <<= (scalaJsBundlerCompile in Compile).dependsOn(fullOptJS in Compile in frontend)
 
 // Assets will be compiled to "webapp" resources directory
-scalaJsBundlerAssets in Compile += Bundle("index",
-  // jQuery
-  Script from url("https://code.jquery.com/jquery-1.12.0.js"),
+scalaJsBundlerAssets in Compile ++= {
+  import com.karasiq.scalajsbundler.dsl.{Script, _}
+  val bootstrap = github("twbs", "bootstrap", "3.3.6") / "dist"
+  val jsDeps = Seq(
+    Script from url("https://code.jquery.com/jquery-1.12.0.js"),
+    Style from url(bootstrap % "css/bootstrap.css"),
+    Script from url(bootstrap % "js/bootstrap.js")
+  )
 
-  // Bootstrap
-  Style from url("https://raw.githubusercontent.com/twbs/bootstrap/v3.3.6/dist/css/bootstrap.css"),
-  Script from url("https://raw.githubusercontent.com/twbs/bootstrap/v3.3.6/dist/js/bootstrap.js"),
-  Static("fonts/glyphicons-halflings-regular.eot") from url("https://raw.githubusercontent.com/twbs/bootstrap/v3.3.6/dist/fonts/glyphicons-halflings-regular.eot"),
-  Static("fonts/glyphicons-halflings-regular.svg") from url("https://raw.githubusercontent.com/twbs/bootstrap/v3.3.6/dist/fonts/glyphicons-halflings-regular.svg"),
-  Static("fonts/glyphicons-halflings-regular.ttf") from url("https://raw.githubusercontent.com/twbs/bootstrap/v3.3.6/dist/fonts/glyphicons-halflings-regular.ttf"),
-  Static("fonts/glyphicons-halflings-regular.woff") from url("https://raw.githubusercontent.com/twbs/bootstrap/v3.3.6/dist/fonts/glyphicons-halflings-regular.woff"),
-  Static("fonts/glyphicons-halflings-regular.woff2") from url("https://raw.githubusercontent.com/twbs/bootstrap/v3.3.6/dist/fonts/glyphicons-halflings-regular.woff2"),
+  val fonts = fontPackage("glyphicons-halflings-regular", bootstrap % "fonts/glyphicons-halflings-regular")
 
-  // Static files
-  Html from file("frontend/webapp/html/index.html"),
-  Script.withMime(Mimes.coffeescript) from file("frontend/webapp/scripts/script.coffee"),
-  Style.withMime(Mimes.less) from file("frontend/webapp/css/style.less"), // Requires less4j library in classpath
-  Image("favicon.ico").withMime(Mimes.ico) from file("frontend/webapp/img/favicon.ico"),
+  val appFiles = Seq(
+    // Static files
+    Html from file("frontend/webapp/html/index.html"),
+    Script.withMime(Mimes.coffeescript) from file("frontend/webapp/scripts/script.coffee"),
+    Style.withMime(Mimes.less) from file("frontend/webapp/css/style.less"), // Requires less4j library in classpath
+    Image("favicon.ico").withMime(Mimes.ico) from file("frontend/webapp/img/favicon.ico"),
 
-  // Scala.js app
-  Script from file("frontend/target/scala-2.11/your-app-frontend-opt.js"),
-  Script from file("frontend/target/scala-2.11/your-app-frontend-launcher.js")
-)
+    // Scala.js app
+    Script from file("frontend/target/scala-2.11/your-app-frontend-opt.js"),
+    Script from file("frontend/target/scala-2.11/your-app-frontend-launcher.js")
+  )
+
+
+  Bundle("index", jsDeps ++ fonts ++ appFiles:_*)
+}
 ```
 
 # Examples
