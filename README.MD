@@ -45,8 +45,9 @@ scalaJsBundlerAssets in Compile ++= {
 ```
 
 # Examples
-* [ScalaJS-Bootstrap test page](https://github.com/Karasiq/scalajs-bootstrap)
-* [ScalaJS-Highcharts test page](https://github.com/Karasiq/scalajs-highcharts)
+* [scalajs-videojs test page](https://github.com/Karasiq/scalajs-videojs)
+* [scalajs-bootstrap test page](https://github.com/Karasiq/scalajs-bootstrap)
+* [scalajs-highcharts test page](https://github.com/Karasiq/scalajs-highcharts)
 * [WebM-TV](https://github.com/Karasiq/webm-tv)
 
 # License
