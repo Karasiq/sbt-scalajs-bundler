@@ -1,4 +1,4 @@
-# sbt-scalajs-bundler [![Version](https://img.shields.io/badge/version-1.0.5-blue.svg)]() [![Build Status](https://travis-ci.org/Karasiq/sbt-scalajs-bundler.svg?branch=master)](https://travis-ci.org/Karasiq/sbt-scalajs-bundler)
+# sbt-scalajs-bundler [![Build Status](https://travis-ci.org/Karasiq/sbt-scalajs-bundler.svg?branch=master)](https://travis-ci.org/Karasiq/sbt-scalajs-bundler) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.karasiq/sbt-scalajs-bundler/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.karasiq/sbt-scalajs-bundler)
 SBT plugin for auto compilation of web assets (js, css, html)
 
 # How to use
