@@ -1,10 +1,10 @@
-# sbt-scalajs-bundler [![Version](https://img.shields.io/badge/version-1.0.5-blue.svg)]() [![Build Status](https://travis-ci.org/Karasiq/sbt-scalajs-bundler.svg?branch=master)](https://travis-ci.org/Karasiq/sbt-scalajs-bundler)
+# sbt-scalajs-bundler [![Build Status](https://travis-ci.org/Karasiq/sbt-scalajs-bundler.svg?branch=master)](https://travis-ci.org/Karasiq/sbt-scalajs-bundler) [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.8.svg)](https://www.scala-js.org) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.karasiq/sbt-scalajs-bundler/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.karasiq/sbt-scalajs-bundler)
 SBT plugin for auto compilation of web assets (js, css, html)
 
 # How to use
 Add line in your `plugins.sbt`:
 ```scala
-addSbtPlugin("com.github.karasiq" % "sbt-scalajs-bundler" % "1.0.5")
+addSbtPlugin("com.github.karasiq" % "sbt-scalajs-bundler" % "1.0.6")
 ```
 
 Write configuration in `build.sbt`:
@@ -18,14 +18,14 @@ scalaJsBundlerCompile in Compile <<= (scalaJsBundlerCompile in Compile).dependsO
 // Assets will be compiled to "webapp" resources directory
 scalaJsBundlerAssets in Compile ++= {
   import com.karasiq.scalajsbundler.dsl.{Script, _}
-  val bootstrap = github("twbs", "bootstrap", "3.3.6") / "dist"
+  val bootstrap = github("twbs", "bootstrap", "v3.3.6") / "dist"
   val jsDeps = Seq(
-    Script from url("https://code.jquery.com/jquery-1.12.0.js"),
-    Style from url(bootstrap % "css/bootstrap.css"),
-    Script from url(bootstrap % "js/bootstrap.js")
+    Script from "org.webjars" % "jquery" % "2.1.3" / "jquery.js", // Requires corresponding entry in libraryDependencies
+    Style from bootstrap / "css" / "bootstrap.css",
+    Script from bootstrap / "js" / "bootstrap.js"
   )
 
-  val fonts = fontPackage("glyphicons-halflings-regular", bootstrap % "fonts/glyphicons-halflings-regular")
+  val fonts = fontPackage("glyphicons-halflings-regular", bootstrap / "fonts" % "glyphicons-halflings-regular")
 
   val appFiles = Seq(
     // Static files

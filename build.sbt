@@ -4,14 +4,18 @@ name := "sbt-scalajs-bundler"
 
 isSnapshot := false
 
-version := "1.0.5"
+version := "1.0.6"
 
 scalacOptions ++= Seq("-target:jvm-1.7")
 
 sbtPlugin := true
 
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.8")
+
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.4" % "test",
+  "org.webjars" % "bootstrap" % "3.3.6" % "test",
+  "org.webjars" % "jquery" % "2.1.3" % "test",
   "commons-io" % "commons-io" % "2.4",
   "org.scalaj" %% "scalaj-http" % "2.2.1",
   "org.jsoup" % "jsoup" % "1.8.3",

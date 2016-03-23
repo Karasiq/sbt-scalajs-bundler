@@ -4,10 +4,11 @@ import java.nio.file.attribute.BasicFileAttributes
 
 import com.karasiq.scalajsbundler.ScalaJSBundleCompiler
 import com.karasiq.scalajsbundler.compilers.{AssetCompilers, JsClosureCompiler}
-import com.karasiq.scalajsbundler.dsl._
+import com.karasiq.scalajsbundler.dsl.{Script, _}
 import org.apache.commons.io.IOUtils
+import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport._
 import org.scalatest.{FlatSpec, Matchers}
-import sbt.url
+import sbt.{url, _}
 
 import scala.util.Try
 
@@ -21,17 +22,21 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
     result.getOrElse("")
   }
 
+  "WebJar resources" should "be extracted" in {
+    getClass.getClassLoader.getResource("META-INF/resources/webjars/jquery/2.1.3/jquery.js") should not be null
+  }
+
   "Assets compiler" should "compile assets" in {
     val assets = Seq(
       // jQuery
-      Script from url("https://code.jquery.com/jquery-1.12.0.js"),
+      Script from github("jquery", "jquery", "1.12.0") / "dist" / "jquery.js",
 
       // Font awesome
       Static("fonts/fontawesome-webfont.woff2")
         .withMime("application/font-woff2") from url("https://fortawesome.github.io/Font-Awesome/assets/font-awesome/fonts/fontawesome-webfont.woff2?v=4.5.0"),
 
       // Bootstrap
-      Style from url("https://raw.githubusercontent.com/twbs/bootstrap/v3.3.6/dist/css/bootstrap.css"),
+      Style from "org.webjars" % "bootstrap" % "3.3.6" / "css/bootstrap.css",
 
       // Page static files
       Script from """

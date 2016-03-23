@@ -8,6 +8,7 @@ import javax.activation.MimetypesFileTypeMap
 import com.karasiq.scalajsbundler.ScalaJSBundler._
 import com.karasiq.scalajsbundler.compilers.PredefinedMimeTypes
 import org.apache.commons.io.FilenameUtils
+import org.scalajs.sbtplugin.JarJSModuleID
 
 import scala.language.implicitConversions
 
@@ -74,7 +75,7 @@ trait BundlerDsl {
       .withMime("image/jpeg")
   }
 
-  final implicit class BuilderOps[+T <: PageContent](val builder: ContentBuilder[T]) {
+  final implicit class BuilderOps[+T <: PageContent](builder: ContentBuilder[T]) {
     def from[S](source: S)(implicit ev: S ⇒ Asset): T = {
       builder.fromAsset(source)
     }
@@ -87,6 +88,10 @@ trait BundlerDsl {
   implicit def fileToAsset(file: File): Asset = FileAsset(file.toString)
 
   implicit def pathToAsset(path: Path): Asset = FileAsset(path.toString)
+
+  implicit def webjarToAsset(moduleId: JarJSModuleID): Asset = ResourceAsset(s"META-INF/resources/webjars/${moduleId.module.name}/${moduleId.module.revision}/${moduleId.jsDep.resourceName}")
+
+  implicit def githubToAsset(gh: GithubRepository): Asset = WebAsset(gh.url)
 
   object Mimes extends PredefinedMimeTypes
 }

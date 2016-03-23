@@ -40,6 +40,12 @@ object ScalaJSBundler {
     }
   }
 
+  case class ResourceAsset(path: String) extends Asset {
+    override def content(): InputStream = {
+      getClass.getClassLoader.getResourceAsStream(path)
+    }
+  }
+
   sealed trait PageContent {
     def asset: Asset
   }
