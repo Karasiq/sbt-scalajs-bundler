@@ -8,7 +8,7 @@ import com.karasiq.scalajsbundler.dsl.{Script, _}
 import org.apache.commons.io.IOUtils
 import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport._
 import org.scalatest.{FlatSpec, Matchers}
-import sbt.{url, _}
+import sbt._
 
 import scala.util.Try
 
@@ -30,10 +30,6 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
     val assets = Seq(
       // jQuery
       Script from github("jquery", "jquery", "1.12.0") / "dist" / "jquery.js",
-
-      // Font awesome
-      Static("fonts/fontawesome-webfont.woff2")
-        .withMime("application/font-woff2") from url("https://fortawesome.github.io/Font-Awesome/assets/font-awesome/fonts/fontawesome-webfont.woff2?v=4.5.0"),
 
       // Bootstrap
       Style from "org.webjars" % "bootstrap" % "3.3.6" / "css/bootstrap.css",
@@ -112,7 +108,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
                   |  body(style='background: url(/background.jpg);')
                   |    h2.hello-jade Hello jade!
                 """.stripMargin
-    )
+    ) ++ ("org.webjars" % "bootstrap" % "3.3.6" / "fonts/glyphicons-halflings-regular").fonts()
 
     if (Files.isDirectory(Paths.get(output))) {
       Files.walkFileTree(Paths.get(output), new SimpleFileVisitor[Path] {
@@ -131,7 +127,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
     val compiler = new ScalaJSBundleCompiler
     compiler.createHtml(AssetCompilers.default, output, "index", assets, inline = true)
     readFile(s"$output/index.html").hashCode shouldBe -1691038017
-    Files.size(Paths.get(s"$output/fonts/fontawesome-webfont.woff2")) shouldBe 66624
+    Files.size(Paths.get(s"$output/fonts/glyphicons-halflings-regular.woff2")) shouldBe 18028
 
     val fullOptCompilers = AssetCompilers {
       case Mimes.javascript ⇒

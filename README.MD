@@ -25,8 +25,6 @@ scalaJsBundlerAssets in Compile ++= {
     Script from bootstrap / "js" / "bootstrap.js"
   )
 
-  val fonts = fontPackage("glyphicons-halflings-regular", bootstrap / "fonts" % "glyphicons-halflings-regular")
-
   val staticDir = (baseDirectory in frontend)(_ / "webapp").value
   val staticFiles = Seq(
     // Static files
@@ -37,7 +35,7 @@ scalaJsBundlerAssets in Compile ++= {
   )
 
 
-  Bundle("index", jsDeps ++ fonts ++ staticFiles ++ scalaJsApplication(frontend).value:_*)
+  Bundle("index", jsDeps, (bootstrap / "fonts" / "glyphicons-halflings-regular").fonts(), staticFiles, scalaJsApplication(frontend).value)
 }
 ```
 

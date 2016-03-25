@@ -60,7 +60,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         clearDirectory(dest.toPath)
         val compiler = new ScalaJSBundleCompiler
         src.foreach { case Bundle(page, contents @ _*) ⇒
-          compiler.createHtml(compilers, dest.toString, page, contents, inline)
+          compiler.createHtml(compilers, dest.toString, page, contents.flatten, inline)
         }
         fileList(dest.toPath)
       },

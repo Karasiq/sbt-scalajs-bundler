@@ -73,5 +73,5 @@ object ScalaJSBundler {
 
   case class PageHtml(asset: Asset, ext: String = "html", mime: String = Mimes.html) extends PageTypedContent
 
-  case class Bundle(name: String, contents: PageContent*)
+  case class Bundle(name: String, contents: Seq[PageContent]*)
 }

@@ -81,6 +81,8 @@ trait BundlerDsl {
     }
   }
 
+  implicit def pageContentAsSeq[T <: PageContent](pc: T): Seq[PageContent] = Seq(pc)
+
   implicit def urlToAsset(url: URL): Asset = WebAsset(url.toString)
 
   implicit def stringToAsset(str: String): Asset = StringAsset(str)
