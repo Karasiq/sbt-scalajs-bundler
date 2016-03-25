@@ -2,9 +2,9 @@ organization := "com.github.karasiq"
 
 name := "sbt-scalajs-bundler"
 
-isSnapshot := false
+version := "1.0.7"
 
-version := "1.0.6"
+isSnapshot := version.value.endsWith("SNAPSHOT")
 
 scalacOptions ++= Seq("-target:jvm-1.7")
 

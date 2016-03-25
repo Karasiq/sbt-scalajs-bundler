@@ -4,7 +4,7 @@ SBT plugin for auto compilation of web assets (js, css, html)
 # How to use
 Add line in your `plugins.sbt`:
 ```scala
-addSbtPlugin("com.github.karasiq" % "sbt-scalajs-bundler" % "1.0.6")
+addSbtPlugin("com.github.karasiq" % "sbt-scalajs-bundler" % "1.0.7")
 ```
 
 Write configuration in `build.sbt`:
@@ -27,28 +27,25 @@ scalaJsBundlerAssets in Compile ++= {
 
   val fonts = fontPackage("glyphicons-halflings-regular", bootstrap / "fonts" % "glyphicons-halflings-regular")
 
-  val appFiles = Seq(
+  val staticDir = (baseDirectory in frontend)(_ / "webapp").value
+  val staticFiles = Seq(
     // Static files
-    Html from file("frontend/webapp/html/index.html"),
-    Script.withMime(Mimes.coffeescript) from file("frontend/webapp/scripts/script.coffee"),
-    Style.withMime(Mimes.less) from file("frontend/webapp/css/style.less"), // Requires less4j library in classpath
-    Image("favicon.ico").withMime(Mimes.ico) from file("frontend/webapp/img/favicon.ico"),
-
-    // Scala.js app
-    Script from file("frontend/target/scala-2.11/your-app-frontend-opt.js"),
-    Script from file("frontend/target/scala-2.11/your-app-frontend-launcher.js")
+    Html from staticDir / "html" / "index.html",
+    Script.withMime(Mimes.coffeescript) from staticDir / "scripts" / "script.coffee",
+    Style.withMime(Mimes.less) from staticDir / "css" / "style.less", // Requires less4j library in classpath
+    Image("favicon.ico").withMime(Mimes.ico) from staticDir / "img" / "favicon.ico"
   )
 
 
-  Bundle("index", jsDeps ++ fonts ++ appFiles:_*)
+  Bundle("index", jsDeps ++ fonts ++ staticFiles ++ scalaJsApplication(frontend).value:_*)
 }
 ```
 
 # Examples
+* [Nanoboard frontend](https://github.com/Karasiq/nanoboard)
 * [scalajs-videojs test page](https://github.com/Karasiq/scalajs-videojs)
 * [scalajs-bootstrap test page](https://github.com/Karasiq/scalajs-bootstrap)
 * [scalajs-highcharts test page](https://github.com/Karasiq/scalajs-highcharts)
-* [WebM-TV](https://github.com/Karasiq/webm-tv)
 
 # License
 The MIT License (MIT)
