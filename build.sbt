@@ -2,7 +2,7 @@ organization := "com.github.karasiq"
 
 name := "sbt-scalajs-bundler"
 
-version := "1.1.0"
+version := "1.1.1"
 
 isSnapshot := version.value.endsWith("SNAPSHOT")
 
