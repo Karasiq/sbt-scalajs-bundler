@@ -2,7 +2,7 @@ organization := "com.github.karasiq"
 
 name := "sbt-scalajs-bundler"
 
-version := "1.0.7"
+version := "1.1.0"
 
 isSnapshot := version.value.endsWith("SNAPSHOT")
 
@@ -10,7 +10,7 @@ scalacOptions ++= Seq("-target:jvm-1.7")
 
 sbtPlugin := true
 
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.8")
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "1.0.0-M1")
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.4" % "test",

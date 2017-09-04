@@ -2,11 +2,11 @@ package com.karasiq.scalajsbundler.dsl
 
 import java.net.URL
 
-import com.karasiq.scalajsbundler.ScalaJSBundler.{PageContent, ResourceAsset}
 import org.apache.commons.io.FilenameUtils
-import org.scalajs.sbtplugin.JarJSModuleID
-import sbt.Keys._
 import sbt._
+import sbt.Keys._
+
+import com.karasiq.scalajsbundler.ScalaJSBundler.{PageContent, ResourceAsset}
 
 trait AssetShortcuts { self: BundlerDsl ⇒
   def fontPackage(name: String, baseUrl: String, dir: String = "fonts", extensions: Seq[String] = Seq("eot", "svg", "ttf", "woff", "woff2")): Seq[PageContent] = {
@@ -22,11 +22,17 @@ trait AssetShortcuts { self: BundlerDsl ⇒
     }
   }
 
-  implicit class WebJarOps(moduleId: JarJSModuleID) {
+  implicit class JarResourceOps(moduleId: ModuleID) {
+    def /(resourceName: String): JarResource = {
+      JarResource(moduleId, resourceName)
+    }
+  }
+
+  implicit class WebJarOps(resource: JarResource) {
     def fonts(name: String = "", dir: String = "fonts", extensions: Seq[String] = Seq("eot", "svg", "ttf", "woff", "woff2")): Seq[PageContent] = {
-      val fontName = Option(name).filter(_.nonEmpty).getOrElse(FilenameUtils.getBaseName(moduleId.jsDep.resourceName))
+      val fontName = Option(name).filter(_.nonEmpty).getOrElse(FilenameUtils.getBaseName(resource.resourceName))
       extensions.map { ext ⇒
-        Static(s"$dir/$fontName.$ext") from JarJSModuleID(moduleId.module, s"${moduleId.jsDep.resourceName}.$ext")
+        Static(s"$dir/$fontName.$ext") from JarResource(resource.module, s"${resource.resourceName}.$ext")
       }
     }
   }

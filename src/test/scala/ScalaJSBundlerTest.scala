@@ -2,15 +2,15 @@ import java.io.{FileInputStream, IOException}
 import java.nio.file._
 import java.nio.file.attribute.BasicFileAttributes
 
-import com.karasiq.scalajsbundler.ScalaJSBundleCompiler
-import com.karasiq.scalajsbundler.compilers.{AssetCompilers, JsClosureCompiler}
-import com.karasiq.scalajsbundler.dsl.{Script, _}
+import scala.util.Try
+
 import org.apache.commons.io.IOUtils
-import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport._
 import org.scalatest.{FlatSpec, Matchers}
 import sbt._
 
-import scala.util.Try
+import com.karasiq.scalajsbundler.ScalaJSBundleCompiler
+import com.karasiq.scalajsbundler.compilers.{AssetCompilers, JsClosureCompiler}
+import com.karasiq.scalajsbundler.dsl.{Script, _}
 
 class ScalaJSBundlerTest extends FlatSpec with Matchers {
   val output = "target/test-output"
@@ -126,7 +126,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
     
     val compiler = new ScalaJSBundleCompiler
     compiler.createHtml(AssetCompilers.default, output, "index", assets, inline = true)
-    readFile(s"$output/index.html").hashCode shouldBe -1691038017
+    readFile(s"$output/index.html").hashCode shouldBe 1840723512
     Files.size(Paths.get(s"$output/fonts/glyphicons-halflings-regular.woff2")) shouldBe 18028
 
     val fullOptCompilers = AssetCompilers {
@@ -135,6 +135,6 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
     } <<= AssetCompilers.default
 
     compiler.createHtml(fullOptCompilers, output, "index_fullopt", assets, inline = true)
-    readFile(s"$output/index_fullopt.html").hashCode shouldBe 1286016232
+    readFile(s"$output/index_fullopt.html").hashCode shouldBe -883781948
   }
 }

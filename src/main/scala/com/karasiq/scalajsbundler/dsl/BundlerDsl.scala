@@ -1,16 +1,16 @@
 package com.karasiq.scalajsbundler.dsl
 
+import javax.activation.MimetypesFileTypeMap
 import java.io.File
 import java.net.URL
 import java.nio.file.Path
-import javax.activation.MimetypesFileTypeMap
+
+import scala.language.implicitConversions
+
+import org.apache.commons.io.FilenameUtils
 
 import com.karasiq.scalajsbundler.ScalaJSBundler._
 import com.karasiq.scalajsbundler.compilers.PredefinedMimeTypes
-import org.apache.commons.io.FilenameUtils
-import org.scalajs.sbtplugin.JarJSModuleID
-
-import scala.language.implicitConversions
 
 trait BundlerDsl {
   object PageContentBuilders {
@@ -91,7 +91,7 @@ trait BundlerDsl {
 
   implicit def pathToAsset(path: Path): Asset = FileAsset(path.toString)
 
-  implicit def webjarToAsset(moduleId: JarJSModuleID): Asset = ResourceAsset(s"META-INF/resources/webjars/${moduleId.module.name}/${moduleId.module.revision}/${moduleId.jsDep.resourceName}")
+  implicit def webjarToAsset(moduleId: JarResource): Asset = ResourceAsset(s"META-INF/resources/webjars/${moduleId.module.name}/${moduleId.module.revision}/${moduleId.resourceName}")
 
   implicit def githubToAsset(gh: GithubRepository): Asset = WebAsset(gh.url)
 
