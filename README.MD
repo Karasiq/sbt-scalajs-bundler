@@ -4,7 +4,7 @@ SBT plugin for auto compilation of web assets (js, css, html)
 # How to use
 Add line in your `plugins.sbt`:
 ```scala
-addSbtPlugin("com.github.karasiq" % "sbt-scalajs-bundler" % "1.1.1") // 1.0.7 for Scala.js 0.6
+addSbtPlugin("com.github.karasiq" % "sbt-scalajs-bundler" % "1.1.2")
 ```
 
 Write configuration in `build.sbt`:
