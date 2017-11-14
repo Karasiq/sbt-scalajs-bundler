@@ -1,8 +1,10 @@
+val scalaJSVersion = sys.env.getOrElse("SCALAJS_VERSION", "0.6.20")
+
 organization := "com.github.karasiq"
 
-name := "sbt-scalajs-bundler"
+name := "sbt-scalajs-bundler" // (if (scalaJSVersion.startsWith("1.")) "sbt-scalajs-bundler" else "sbt-scalajs-bundler-sjs06")
 
-version := "1.1.1"
+version := "1.1.2"
 
 isSnapshot := version.value.endsWith("SNAPSHOT")
 
@@ -10,7 +12,7 @@ scalacOptions ++= Seq("-target:jvm-1.7")
 
 sbtPlugin := true
 
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "1.0.0-M1")
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion)
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.4" % "test",

@@ -1,9 +1,11 @@
 package com.karasiq.scalajsbundler.compilers
 
-import com.google.javascript.jscomp._
-import com.karasiq.scalajsbundler.ScalaJSBundler.PageTypedContent
-
 import scala.collection.JavaConversions._
+
+import com.google.javascript.jscomp._
+import com.google.javascript.jscomp.CompilerOptions.LanguageMode
+
+import com.karasiq.scalajsbundler.ScalaJSBundler.PageTypedContent
 
 class JsClosureCompiler(advanced: Boolean) extends AssetCompiler {
   def this() = {
@@ -17,6 +19,9 @@ class JsClosureCompiler(advanced: Boolean) extends AssetCompiler {
 
     // Set options
     val options = new CompilerOptions
+    options.setLanguageIn(LanguageMode.ECMASCRIPT6)
+    options.setLanguageOut(LanguageMode.ECMASCRIPT5)
+
     val level = if (advanced) {
       CompilationLevel.ADVANCED_OPTIMIZATIONS
     } else {
