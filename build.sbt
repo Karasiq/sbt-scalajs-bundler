@@ -4,7 +4,7 @@ organization := "com.github.karasiq"
 
 name := "sbt-scalajs-bundler" // (if (scalaJSVersion.startsWith("1.")) "sbt-scalajs-bundler" else "sbt-scalajs-bundler-sjs06")
 
-version := "1.1.2"
+version := "1.2.0"
 
 isSnapshot := version.value.endsWith("SNAPSHOT")
 

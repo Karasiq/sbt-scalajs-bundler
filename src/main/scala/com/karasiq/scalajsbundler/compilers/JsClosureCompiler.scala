@@ -34,7 +34,7 @@ class JsClosureCompiler(advanced: Boolean) extends AssetCompiler {
       SourceFile.fromInputStream(s"input_$index.js", c.asset.content())
     }
     val result = compiler.compile(CommandLineRunner.getDefaultExterns, jsInput, options)
-    assert(result.errors.isEmpty, "Compilation failed")
+    require(result.errors.isEmpty, "Compilation failed")
     compiler.toSource
   }
 }

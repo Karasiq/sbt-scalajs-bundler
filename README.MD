@@ -4,13 +4,13 @@ SBT plugin for auto compilation of web assets (js, css, html)
 # How to use
 Add line in your `plugins.sbt`:
 ```scala
-addSbtPlugin("com.github.karasiq" % "sbt-scalajs-bundler" % "1.1.2")
+addSbtPlugin("com.github.karasiq" % "sbt-scalajs-bundler" % "1.2.0")
 ```
 
 Write configuration in `build.sbt`:
 ```scala
 // Enable bundler plugin
-enablePlugins(ScalaJSBundlerPlugin)
+enablePlugins(SJSAssetBundlerPlugin)
 
 // Assuming frontend is your Scala.js project, and this file configures backend package
 scalaJsBundlerCompile in Compile <<= (scalaJsBundlerCompile in Compile).dependsOn(fullOptJS in Compile in frontend)

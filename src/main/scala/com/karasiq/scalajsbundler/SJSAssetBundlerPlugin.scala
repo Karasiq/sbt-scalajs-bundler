@@ -1,18 +1,19 @@
 package com.karasiq.scalajsbundler
 
 import java.io.IOException
-import java.nio.file.attribute.BasicFileAttributes
 import java.nio.file.{Path, _}
-
-import com.karasiq.scalajsbundler.ScalaJSBundler.Bundle
-import com.karasiq.scalajsbundler.compilers.AssetCompilers
-import sbt.Keys._
-import sbt._
-import sbt.plugins.JvmPlugin
+import java.nio.file.attribute.BasicFileAttributes
 
 import scala.collection.mutable.ListBuffer
 
-object ScalaJSBundlerPlugin extends AutoPlugin {
+import sbt.{Def, _}
+import sbt.Keys._
+import sbt.plugins.JvmPlugin
+
+import com.karasiq.scalajsbundler.ScalaJSBundler.Bundle
+import com.karasiq.scalajsbundler.compilers.AssetCompilers
+
+object SJSAssetBundlerPlugin extends AutoPlugin {
   private def clearDirectory(destDir: Path): Unit = {
     if (Files.isSymbolicLink(destDir) && Files.isRegularFile(destDir)) {
       Files.delete(destDir)
@@ -50,7 +51,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     val scalaJsBundlerCompilers = settingKey[AssetCompilers]("Scala.js asset compilers.")
     val scalaJsBundlerCompile = taskKey[Seq[File]]("Compiles Scala.js bundles.")
 
-    lazy val baseScalaJsBundlerSettings: Seq[Def.Setting[_]] = Seq(
+    lazy val baseSJSAssetBundlerSettings: Seq[Def.Setting[_]] = Seq(
       scalaJsBundlerAssets := Nil,
       scalaJsBundlerDest := resourceManaged.value / "webapp",
       scalaJsBundlerInline := false,
@@ -72,5 +73,5 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
   override def requires: Plugins = JvmPlugin
 
-  override val projectSettings = inConfig(Compile)(baseScalaJsBundlerSettings)
+  override val projectSettings: Seq[Def.Setting[_]] = inConfig(Compile)(baseSJSAssetBundlerSettings)
 }

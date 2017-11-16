@@ -126,7 +126,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
     
     val compiler = new ScalaJSBundleCompiler
     compiler.createHtml(AssetCompilers.default, output, "index", assets, inline = true)
-    readFile(s"$output/index.html").hashCode shouldBe 1840723512
+    readFile(s"$output/index.html").hashCode shouldBe 1044397778
     Files.size(Paths.get(s"$output/fonts/glyphicons-halflings-regular.woff2")) shouldBe 18028
 
     val fullOptCompilers = AssetCompilers {
@@ -135,6 +135,6 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
     } <<= AssetCompilers.default
 
     compiler.createHtml(fullOptCompilers, output, "index_fullopt", assets, inline = true)
-    readFile(s"$output/index_fullopt.html").hashCode shouldBe -883781948
+    readFile(s"$output/index_fullopt.html").hashCode shouldBe 449384366
   }
 }

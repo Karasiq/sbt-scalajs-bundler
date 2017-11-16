@@ -45,7 +45,7 @@ trait AssetShortcuts { self: BundlerDsl ⇒
     ResourceAsset(path)
   }
 
-  def scalaJsApplication(project: Project, launcher: Boolean = true, fastOpt: Boolean = false): Def.Initialize[Seq[PageContent]] = {
+  def scalaJsApplication(project: Project, launcher: Boolean = false, fastOpt: Boolean = false): Def.Initialize[Seq[PageContent]] = {
     (name in project, target in project, scalaVersion in project) {
       case (name, target, version) ⇒
         val output = target / s"scala-${CrossVersion.binaryScalaVersion(version)}"
@@ -55,6 +55,18 @@ trait AssetShortcuts { self: BundlerDsl ⇒
         )
 
         if (launcher) files :+ (Script from output / s"$name-launcher.js") else files
+    }
+  }
+
+  def scalaJsBundlerApplication(project: Project, fastOpt: Boolean = false): Def.Initialize[Seq[PageContent]] = {
+    (name in project, target in project, scalaVersion in project) {
+      case (name, target, version) ⇒
+        val output = target / s"scala-${CrossVersion.binaryScalaVersion(version)}" / "scalajs-bundler" / "main"
+        val files = Seq(
+          if (fastOpt) Script from output / s"$name-fastopt-bundle.js"
+          else Script from output / s"$name-opt-bundle.js"
+        )
+        files
     }
   }
 }
