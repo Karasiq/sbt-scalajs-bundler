@@ -13,10 +13,9 @@ Write configuration in `build.sbt`:
 enablePlugins(SJSAssetBundlerPlugin)
 
 // Assuming frontend is your Scala.js project, and this file configures backend package
-scalaJsBundlerCompile in Compile := {
-  (fullOptJS in Compile in frontend).value 
-  (scalaJsBundlerCompile in Compile).value 
-}
+scalaJsBundlerCompile in Compile := (scalaJsBundlerCompile in Compile)
+  .dependsOn(fullOptJS in Compile in frontend)
+  .value
 
 // Assets will be compiled to "webapp" resources directory
 scalaJsBundlerAssets in Compile ++= {
