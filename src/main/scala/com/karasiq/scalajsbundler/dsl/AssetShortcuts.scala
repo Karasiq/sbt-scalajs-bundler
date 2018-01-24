@@ -8,7 +8,7 @@ import sbt.Keys._
 
 import com.karasiq.scalajsbundler.ScalaJSBundler.{PageContent, ResourceAsset}
 
-trait AssetShortcuts { self: BundlerDsl ⇒
+trait AssetShortcuts { self: BundlerDsl with BundlerImplicits ⇒
   def fontPackage(name: String, baseUrl: String, dir: String = "fonts", extensions: Seq[String] = Seq("eot", "svg", "ttf", "woff", "woff2")): Seq[PageContent] = {
     extensions.map { ext ⇒
       Static(s"$dir/$name.$ext") from new URL(s"$baseUrl.$ext")
@@ -45,28 +45,30 @@ trait AssetShortcuts { self: BundlerDsl ⇒
     ResourceAsset(path)
   }
 
-  def scalaJsApplication(project: Project, launcher: Boolean = false, fastOpt: Boolean = false): Def.Initialize[Seq[PageContent]] = {
-    (name in project, target in project, scalaVersion in project) {
-      case (name, target, version) ⇒
-        val output = target / s"scala-${CrossVersion.binaryScalaVersion(version)}"
-        val files = Seq(
-          if (fastOpt) Script from output / s"$name-fastopt.js"
-          else Script from output / s"$name-opt.js"
-        )
+  def scalaJsApplication(project: Project, launcher: Boolean = false, fastOpt: Boolean = false): Def.Initialize[Seq[PageContent]] = Def.setting {
+    val nameValue = (name in project).value
+    val targetValue = (target in project).value
+    val versionValue = (scalaVersion in project).value
 
-        if (launcher) files :+ (Script from output / s"$name-launcher.js") else files
-    }
+    val output = targetValue / s"scala-${CrossVersion.binaryScalaVersion(versionValue)}"
+    val files = Seq(
+      if (fastOpt) Script from output / s"$nameValue-fastopt.js"
+      else Script from output / s"$nameValue-opt.js"
+    )
+
+    if (launcher) files :+ (Script from output / s"$nameValue-launcher.js") else files
   }
 
-  def scalaJsBundlerApplication(project: Project, fastOpt: Boolean = false): Def.Initialize[Seq[PageContent]] = {
-    (name in project, target in project, scalaVersion in project) {
-      case (name, target, version) ⇒
-        val output = target / s"scala-${CrossVersion.binaryScalaVersion(version)}" / "scalajs-bundler" / "main"
-        val files = Seq(
-          if (fastOpt) Script from output / s"$name-fastopt-bundle.js"
-          else Script from output / s"$name-opt-bundle.js"
-        )
-        files
-    }
+  def scalaJsBundlerApplication(project: Project, fastOpt: Boolean = false): Def.Initialize[Seq[PageContent]] = Def.setting {
+    val nameValue = (name in project).value
+    val targetValue = (target in project).value
+    val versionValue = (scalaVersion in project).value
+
+    val output = targetValue / s"scala-${CrossVersion.binaryScalaVersion(versionValue)}" / "scalajs-bundler" / "main"
+    val files = Seq(
+      if (fastOpt) Script from output / s"$nameValue-fastopt-bundle.js"
+      else Script from output / s"$nameValue-opt-bundle.js"
+    )
+    files
   }
 }

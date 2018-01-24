@@ -4,22 +4,22 @@ organization := "com.github.karasiq"
 
 name := "sbt-scalajs-bundler" // (if (scalaJSVersion.startsWith("1.")) "sbt-scalajs-bundler" else "sbt-scalajs-bundler-sjs06")
 
-version := "1.2.0"
+version := "1.2.1"
 
 isSnapshot := version.value.endsWith("SNAPSHOT")
 
-scalacOptions ++= Seq("-target:jvm-1.7")
+crossSbtVersions := Seq("0.13.16", "1.1.0")
 
 sbtPlugin := true
 
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion)
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "2.2.4" % "test",
+  "org.scalatest" %% "scalatest" % "3.0.4" % "test",
   "org.webjars" % "bootstrap" % "3.3.6" % "test",
   "org.webjars" % "jquery" % "2.1.3" % "test",
   "commons-io" % "commons-io" % "2.4",
-  "org.scalaj" %% "scalaj-http" % "2.2.1",
+  "org.scalaj" %% "scalaj-http" % "2.3.0",
   "org.jsoup" % "jsoup" % "1.8.3",
   "com.google.javascript" % "closure-compiler" % "v20130603" % "provided",
   "com.yahoo.platform.yui" % "yuicompressor" % "2.4.8",

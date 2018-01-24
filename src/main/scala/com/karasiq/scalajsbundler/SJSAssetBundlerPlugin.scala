@@ -56,14 +56,14 @@ object SJSAssetBundlerPlugin extends AutoPlugin {
       scalaJsBundlerDest := resourceManaged.value / "webapp",
       scalaJsBundlerInline := false,
       scalaJsBundlerCompilers := AssetCompilers.default,
-      scalaJsBundlerCompile <<= (scalaJsBundlerCompilers, scalaJsBundlerAssets, scalaJsBundlerDest, scalaJsBundlerInline, streams).map { (compilers, src, dest, inline, streams) ⇒
-        streams.log.info("Compiling Scala.js assets")
-        clearDirectory(dest.toPath)
+      scalaJsBundlerCompile := {
+        streams.value.log.info("Compiling Scala.js assets")
+        clearDirectory(scalaJsBundlerDest.value.toPath)
         val compiler = new ScalaJSBundleCompiler
-        src.foreach { case Bundle(page, contents @ _*) ⇒
-          compiler.createHtml(compilers, dest.toString, page, contents.flatten, inline)
+        scalaJsBundlerAssets.value.foreach { case Bundle(page, contents @ _*) ⇒
+          compiler.createHtml(scalaJsBundlerCompilers.value, scalaJsBundlerDest.value.toString, page, contents.flatten, scalaJsBundlerInline.value)
         }
-        fileList(dest.toPath)
+        fileList(scalaJsBundlerDest.value.toPath)
       },
       managedResources ++= scalaJsBundlerCompile.value
     )

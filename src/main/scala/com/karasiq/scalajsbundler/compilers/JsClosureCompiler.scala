@@ -1,6 +1,6 @@
 package com.karasiq.scalajsbundler.compilers
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 import com.google.javascript.jscomp._
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode
@@ -33,7 +33,7 @@ class JsClosureCompiler(advanced: Boolean) extends AssetCompiler {
     val jsInput = contents.zipWithIndex.map { case (c, index) ⇒
       SourceFile.fromInputStream(s"input_$index.js", c.asset.content())
     }
-    val result = compiler.compile(CommandLineRunner.getDefaultExterns, jsInput, options)
+    val result = compiler.compile(CommandLineRunner.getDefaultExterns, jsInput.asJava, options)
     require(result.errors.isEmpty, "Compilation failed")
     compiler.toSource
   }
