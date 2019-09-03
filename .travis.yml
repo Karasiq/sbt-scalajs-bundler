@@ -1,6 +1,11 @@
 language: scala
 scala:
   - 2.10.4
+  - 2.12.9
+os: linux
+dist: trusty
 jdk:
   - oraclejdk8
+  - oraclejdk9
+  - oraclejdk11
 sudo: false
