@@ -6,6 +6,6 @@ os: linux
 dist: trusty
 jdk:
   - oraclejdk8
-  - oraclejdk9
+  # - oraclejdk9 there seems to be some bug with nashorn here
   - oraclejdk11
 sudo: false
