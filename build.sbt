@@ -1,10 +1,10 @@
-val scalaJSVersion = sys.env.getOrElse("SCALAJS_VERSION", "0.6.28")
+val scalaJSVersion = sys.env.getOrElse("SCALAJS_VERSION", "0.6.32")
 
 organization := "com.github.karasiq"
 
 name := "sbt-scalajs-bundler" // (if (scalaJSVersion.startsWith("1.")) "sbt-scalajs-bundler" else "sbt-scalajs-bundler-sjs06")
 
-version := "1.2.2-SNAPSHOT"
+version := "1.2.2"
 
 isSnapshot := version.value.endsWith("SNAPSHOT")
 
