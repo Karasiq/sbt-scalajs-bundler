@@ -19,8 +19,8 @@ class JsClosureCompiler(advanced: Boolean) extends AssetCompiler {
 
     // Set options
     val options = new CompilerOptions
-    options.setLanguageIn(LanguageMode.ECMASCRIPT6)
-    options.setLanguageOut(LanguageMode.ECMASCRIPT5)
+    options.setLanguageIn(LanguageMode.STABLE_IN)
+    options.setLanguageOut(LanguageMode.STABLE_OUT)
 
     val level = if (advanced) {
       CompilationLevel.ADVANCED_OPTIMIZATIONS

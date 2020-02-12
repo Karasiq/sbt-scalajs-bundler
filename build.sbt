@@ -1,10 +1,10 @@
-val scalaJSVersion = sys.env.getOrElse("SCALAJS_VERSION", "0.6.20")
+val scalaJSVersion = sys.env.getOrElse("SCALAJS_VERSION", "0.6.32")
 
 organization := "com.github.karasiq"
 
 name := "sbt-scalajs-bundler" // (if (scalaJSVersion.startsWith("1.")) "sbt-scalajs-bundler" else "sbt-scalajs-bundler-sjs06")
 
-version := "1.2.1"
+version := "1.2.2"
 
 isSnapshot := version.value.endsWith("SNAPSHOT")
 
@@ -21,7 +21,7 @@ libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "2.4",
   "org.scalaj" %% "scalaj-http" % "2.3.0",
   "org.jsoup" % "jsoup" % "1.8.3",
-  "com.google.javascript" % "closure-compiler" % "v20130603" % "provided",
+  "com.google.javascript" % "closure-compiler" % "v20190513" % "provided",
   "com.yahoo.platform.yui" % "yuicompressor" % "2.4.8",
   "com.googlecode.htmlcompressor" % "htmlcompressor" % "1.5.2",
   "de.neuland-bfi" % "jade4j" % "1.1.4" % "provided",
