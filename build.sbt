@@ -36,7 +36,7 @@ lazy val projectSettings =
 
 lazy val publishSettings =
   Seq(
-    sonatypeSessionName     := s"sbt-scalajs-bundler v${version.value}",
+    sonatypeSessionName     := s"${name.value} v${version.value}",
     publishConfiguration    := publishConfiguration.value.withOverwrite(true),
     publishTo               := sonatypePublishToBundle.value,
     publishMavenStyle       := true,
