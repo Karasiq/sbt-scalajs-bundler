@@ -1,7 +1,5 @@
 package com.karasiq.scalajsbundler.dsl
 
-import com.karasiq.scalajsbundler.ScalaJSBundler
-
 import java.net.URL
 import org.apache.commons.io.FilenameUtils
 import sbt._

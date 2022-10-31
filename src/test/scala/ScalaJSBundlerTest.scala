@@ -134,7 +134,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
 
     val fullOptCompilers = AssetCompilers {
       case Mimes.javascript ⇒
-        new JsClosureCompiler(advanced = false)
+        JsClosureCompiler.default
     } <<= AssetCompilers.default
 
     compiler.createHtml(fullOptCompilers, output, "index_fullopt", assets, inline = true)
