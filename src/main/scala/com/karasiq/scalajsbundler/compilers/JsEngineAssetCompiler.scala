@@ -14,7 +14,7 @@ trait JsEngineAssetCompiler extends AssetCompiler {
   protected final lazy val jsEngine = {
     val jsEngine = new ScriptEngineManager(null).getEngineByExtension("js")
     assert(jsEngine.ne(null), "No JavaScript engine found in classpath")
-    scripts.foreach(script ⇒ jsEngine.eval(script, context))
+    scripts.foreach(script => jsEngine.eval(script, context))
     jsEngine
   }
 

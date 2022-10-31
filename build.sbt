@@ -1,5 +1,3 @@
-// Project
-
 lazy val `sbt-scalajs-bundler` =
   project.in(file("."))
     .settings(projectSettings, publishSettings)
@@ -8,10 +6,15 @@ lazy val `sbt-scalajs-bundler` =
 lazy val projectSettings =
   Seq(
     organization := "com.github.karasiq",
-    name :=
-      "sbt-scalajs-bundler" // (if (scalaJSVersion.startsWith("1.")) "sbt-scalajs-bundler" else "sbt-scalajs-bundler-sjs06")
-    ,
-    crossSbtVersions := Seq("0.13.16", sbtVersion.value),
+    name         :=
+      (if (Deps.isScalaJs06)
+         "sbt-scalajs-bundler-sjs06"
+       else
+         "sbt-scalajs-bundler"),
+    crossSbtVersions := (if (Deps.isScalaJs06)
+                           Seq("0.13.16", sbtVersion.value)
+                         else
+                           Seq(sbtVersion.value)),
     sbtPlugin :=
       true,
     libraryDependencies ++= Seq(
@@ -27,16 +30,16 @@ lazy val projectSettings =
       "de.neuland-bfi"                % "jade4j"           % "1.1.4"     % Provided,
       "com.github.sommeri"            % "less4j"           % "1.15.4"    % Provided
     ),
-    addSbtPlugin(Deps.ScalaJS        % Provided),
+    addSbtPlugin(Deps.ScalaJS % Provided),
     addSbtPlugin(Deps.ScalaJSBundler % Provided)
   )
 
 lazy val publishSettings =
   Seq(
-    sonatypeSessionName  := s"${name.value} v${version.value}",
-    publishConfiguration := publishConfiguration.value.withOverwrite(true),
-    publishTo            := sonatypePublishToBundle.value,
-    publishMavenStyle    := true,
+    sonatypeSessionName     := s"${name.value} v${version.value}",
+    publishConfiguration    := publishConfiguration.value.withOverwrite(true),
+    publishTo               := sonatypePublishToBundle.value,
+    publishMavenStyle       := true,
     publishArtifact in Test := false,
     pomIncludeRepository    := { _ => false },
     licenses                := Seq("Apache License, Version 2.0" -> url("http://opensource.org/licenses/Apache-2.0")),
@@ -60,9 +63,17 @@ lazy val publishSettings =
 
 lazy val Deps =
   new {
-    lazy val ScalaJSVersion = sys.props.getOrElse("SCALAJS_VERSION", "0.6.33")
+    lazy val ScalaJSVersion = sys.props.getOrElse("SCALAJS_VERSION", "1.8.0")
+
+    def isScalaJs06: Boolean =
+      ScalaJSVersion.startsWith("0.6.")
 
     lazy val ScalaJS = "org.scala-js" % "sbt-scalajs" % ScalaJSVersion
 
-    lazy val ScalaJSBundler = "ch.epfl.scala" % "sbt-scalajs-bundler" % "0.15.0"
+    lazy val ScalaJSBundler =
+      if (isScalaJs06)
+        "ch.epfl.scala" % "sbt-scalajs-bundler-sjs06" % "0.18.0"
+      else
+        "ch.epfl.scala" % "sbt-scalajs-bundler" % "0.21.0"
+
   }

@@ -10,7 +10,6 @@ jobs:
   compile-sjs1:
     name: Build project for Scala.js 1.0.0+
     runs-on: ubuntu-18.04
-    if: false
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 1.8
@@ -28,7 +27,7 @@ jobs:
           key: sjsbundler-sbt-sjs1
       - name: Build project
         run: |
-          sbt -J-DSCALAJS_VERSION=1.11.0 ^compile ^test
+          sbt -J-DSCALAJS_VERSION=1.8.0 ^test
   compile-sjs06:
     name: Build project for Scala.js 0.6.xx
     runs-on: ubuntu-18.04
@@ -49,4 +48,4 @@ jobs:
           key: sjsbundler-sbt-sjs06
       - name: Build project
         run: |
-          sbt -J-DSCALAJS_VERSION=0.6.33 ^compile ^test
+          sbt -J-DSCALAJS_VERSION=0.6.33 ^test

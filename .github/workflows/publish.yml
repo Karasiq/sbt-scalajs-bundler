@@ -2,8 +2,6 @@ name: Publish maven packages
 
 on:
   pull_request:
-    branches:
-      - master
   push:
     branches:
       - master
@@ -70,12 +68,18 @@ jobs:
             echo '::set-env name=is_snapshot::false'
           fi
       - name: Install GPG key
-        if: ${{ secrets.OSSRH_GPG_KEY }}
         run: |
+          if [[ '${{ secrets.OSSRH_USERNAME }}' == '' ]]; then
+            exit 0
+          fi
           echo '${{ secrets.OSSRH_GPG_KEY }}' > secret.gpg
           echo '${{ secrets.OSSRH_GPG_PASSPHRASE }}' | gpg --batch --yes --passphrase-fd 0 --import secret.gpg
       - name: Set SBT credentials
         run: |
+          if [[ '${{ secrets.OSSRH_USERNAME }}' == '' ]]; then
+            exit 0
+          fi
+          
           mkdir -p ~/.sbt/1.0/plugins
           echo 'addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "2.1")' > ~/.sbt/1.0/plugins/sonatype.sbt
           echo 'addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.1")' > ~/.sbt/1.0/plugins/gpg.sbt
@@ -84,19 +88,36 @@ jobs:
                                            "${{ secrets.OSSRH_USERNAME }}",
                                            "${{ secrets.OSSRH_PASSWORD }}")' > ~/.sbt/1.0/sonatype.sbt
       - name: Release SBT package
-        if: ${{ secrets.OSSRH_GPG_KEY }}
         run: |
+          if [[ '${{ secrets.OSSRH_USERNAME }}' == '' ]]; then
+            exit 0
+          fi
+          
           # See https://github.com/sbt/sbt-pgp/issues/173
           echo '#! /bin/sh
                 gpg --pinentry-mode loopback $@' > gpg.sh
           chmod +x gpg.sh
           
-          sbt 'set Global/PgpKeys.gpgCommand := (baseDirectory.value / "gpg.sh").getAbsolutePath;
+          sbt -J-DSCALAJS_VERSION=0.6.33 'set Global/PgpKeys.gpgCommand := (baseDirectory.value / "gpg.sh").getAbsolutePath;
                set ThisBuild/version := "${{ env.version }}";
                set ThisBuild/isSnapshot := ${{ env.is_snapshot }};
                set pgpPassphrase := Some("${{ secrets.OSSRH_GPG_PASSPHRASE }}".toCharArray);
+               clean;
                ^publishSigned'
           if [[ "${{ env.is_snapshot }}" == "false" ]]; then
-            sbt 'set ThisBuild/version := "${{ env.version }}";
+            sbt -J-DSCALAJS_VERSION=0.6.33 'set ThisBuild/version := "${{ env.version }}";
                  sonatypeBundleRelease'
           fi
+          
+          sbt -J-DSCALAJS_VERSION=1.8.0 'set Global/PgpKeys.gpgCommand := (baseDirectory.value / "gpg.sh").getAbsolutePath;
+               set ThisBuild/version := "${{ env.version }}";
+               set ThisBuild/isSnapshot := ${{ env.is_snapshot }};
+               set pgpPassphrase := Some("${{ secrets.OSSRH_GPG_PASSPHRASE }}".toCharArray);
+               clean;
+               ^publishSigned'
+          if [[ "${{ env.is_snapshot }}" == "false" ]]; then
+            sbt -J-DSCALAJS_VERSION=1.8.0 'set ThisBuild/version := "${{ env.version }}";
+                 sonatypeBundleRelease'
+          fi
+          
+          echo 'Published version: `${{ env.version }}`' > $GITHUB_STEP_SUMMARY

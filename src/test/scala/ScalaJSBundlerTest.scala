@@ -132,12 +132,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
     readFile(s"$output/index.html").hashCode shouldBe 644681227; // 1044397778
     Files.size(Paths.get(s"$output/fonts/glyphicons-halflings-regular.woff2")) shouldBe 18028
 
-    val fullOptCompilers = AssetCompilers {
-      case Mimes.javascript ⇒
-        new JsClosureCompiler(advanced = true)
-    } <<= AssetCompilers.default
-
-    compiler.createHtml(fullOptCompilers, output, "index_fullopt", assets, inline = true)
+    compiler.createHtml(AssetCompilers.default, output, "index_fullopt", assets, inline = true)
     readFile(s"$output/index_fullopt.html").hashCode shouldBe 644681227; //449384366
   }
 }
