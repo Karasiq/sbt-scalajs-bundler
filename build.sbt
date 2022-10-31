@@ -62,5 +62,5 @@ lazy val Deps =
 
     lazy val ScalaJS = "org.scala-js" % "sbt-scalajs" % ScalaJSVersion
 
-    lazy val ScalaJSBundler = "ch.epfl.scala" % "sbt-scalajs-bundler" % "0.15.0"
+    lazy val ScalaJSBundler = "ch.epfl.scala" % "sbt-scalajs-bundler" % "0.14.0"
   }
