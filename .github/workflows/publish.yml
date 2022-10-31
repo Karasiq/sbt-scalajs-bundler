@@ -102,7 +102,7 @@ jobs:
                set ThisBuild/version := "${{ env.version }}";
                set ThisBuild/isSnapshot := ${{ env.is_snapshot }};
                set pgpPassphrase := Some("${{ secrets.OSSRH_GPG_PASSPHRASE }}".toCharArray);
-               clean
+               clean;
                ^publishSigned'
           if [[ "${{ env.is_snapshot }}" == "false" ]]; then
             sbt -J-DSCALAJS_VERSION=0.6.33 'set ThisBuild/version := "${{ env.version }}";
@@ -113,7 +113,7 @@ jobs:
                set ThisBuild/version := "${{ env.version }}";
                set ThisBuild/isSnapshot := ${{ env.is_snapshot }};
                set pgpPassphrase := Some("${{ secrets.OSSRH_GPG_PASSPHRASE }}".toCharArray);
-               clean
+               clean;
                ^publishSigned'
           if [[ "${{ env.is_snapshot }}" == "false" ]]; then
             sbt -J-DSCALAJS_VERSION=1.8.0 'set ThisBuild/version := "${{ env.version }}";
