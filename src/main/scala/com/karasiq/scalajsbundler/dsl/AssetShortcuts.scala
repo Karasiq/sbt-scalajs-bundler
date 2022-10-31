@@ -7,7 +7,7 @@ import org.apache.commons.io.FilenameUtils
 import sbt._
 import sbt.Keys._
 import com.karasiq.scalajsbundler.ScalaJSBundler.{PageContent, ResourceAsset}
-import org.scalajs.sbtplugin.ScalaJSPlugin.{AutoImport => ScalaJS}
+import org.scalajs.sbtplugin.ScalaJSPlugin.{autoImport => ScalaJS}
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.{autoImport => SJSBundler}
 
 trait AssetShortcuts { self: BundlerDsl with BundlerImplicits =>
@@ -150,9 +150,9 @@ trait AssetShortcuts { self: BundlerDsl with BundlerImplicits =>
       Static(s"scripts/$sourceMapName") from (output / sourceMapName)
     }
 
-  def SJSApps =
-    Def.setting {
-      object SJSShortcuts {
+  def SJSApps: Def.Initialize[Task[SJSShortcuts]] =
+    Def.task {
+      object SJSShortcuts extends SJSShortcuts {
         def app(project: Project, fastOpt: Boolean = false): Seq[ScalaJSBundler.PageTypedContent] = {
           val compiled =
             if (fastOpt)
