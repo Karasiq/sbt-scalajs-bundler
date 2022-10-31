@@ -80,8 +80,8 @@ object SJSAssetBundlerPlugin extends AutoPlugin {
           }
           fileList(scalaJsBundlerDest.value.toPath)
         },
-        managedResources  := managedResources.dependsOn(scalaJsBundlerCompile).value,
-        managedResources ++= scalaJsBundlerCompile.value
+        managedResources ++= scalaJsBundlerCompile.value,
+        compile           := compile.dependsOn(scalaJsBundlerCompile).value
       )
   }
 
