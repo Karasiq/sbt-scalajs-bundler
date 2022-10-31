@@ -36,7 +36,7 @@ lazy val projectSettings =
 
 lazy val publishSettings =
   Seq(
-    sonatypeSessionName     := s"${name.value} v${version.value}",
+    sonatypeSessionName     := s"sbt-scalajs-bundler v${version.value}",
     publishConfiguration    := publishConfiguration.value.withOverwrite(true),
     publishTo               := sonatypePublishToBundle.value,
     publishMavenStyle       := true,
@@ -72,7 +72,7 @@ lazy val Deps =
 
     lazy val ScalaJSBundler =
       if (isScalaJs06)
-        "ch.epfl.scala" % "sbt-scalajs-bundler-sjs06" % "0.19.0"
+        "ch.epfl.scala" % "sbt-scalajs-bundler-sjs06" % "0.18.0"
       else
         "ch.epfl.scala" % "sbt-scalajs-bundler" % "0.21.0"
 
