@@ -30,8 +30,8 @@ lazy val projectSettings =
       "de.neuland-bfi"                % "jade4j"           % "1.1.4"     % Provided,
       "com.github.sommeri"            % "less4j"           % "1.15.4"    % Provided
     ),
-    addSbtPlugin(Deps.ScalaJS),
-    addSbtPlugin(Deps.ScalaJSBundler)
+    addSbtPlugin(Deps.ScalaJS % Provided),
+    addSbtPlugin(Deps.ScalaJSBundler % Provided)
   )
 
 lazy val publishSettings =
