@@ -69,6 +69,7 @@ trait AssetShortcuts { self: BundlerDsl with BundlerImplicits =>
   def resource(path: String): ResourceAsset =
     ResourceAsset(path)
 
+  @deprecated("Use SJSApp.app(prj, fastOpt)", "1.3.0")
   def scalaJsApplication(
       project: Project,
       launcher: Boolean = false,
@@ -94,6 +95,7 @@ trait AssetShortcuts { self: BundlerDsl with BundlerImplicits =>
         files
     }
 
+  @deprecated("Use SJSApp.bundlerApp(prj, fastOpt)", "1.3.0")
   def scalaJsBundlerApplication(project: Project, fastOpt: Boolean = false): Def.Initialize[Seq[PageContent]] =
     Def.setting {
       val nameValue    = (name in project).value
@@ -111,6 +113,7 @@ trait AssetShortcuts { self: BundlerDsl with BundlerImplicits =>
       files
     }
 
+  @deprecated("Use SJSApp.bundlerApp(prj, fastOpt)", "1.3.0")
   def scalaJsBundlerSourceMap(project: Project, fastOpt: Boolean = false): Def.Initialize[PageContent] =
     Def.setting {
       import sbt.{project => _, _}
@@ -130,6 +133,7 @@ trait AssetShortcuts { self: BundlerDsl with BundlerImplicits =>
       Static(s"scripts/$sourceMapName") from (output / sourceMapName)
     }
 
+  @deprecated("Use SJSApp.app(prj, fastOpt)", "1.3.0")
   def scalaJsApplicationSourceMap(project: Project, fastOpt: Boolean = false): Def.Initialize[PageContent] =
     Def.setting {
       import sbt.Keys.{name, scalaVersion, target}

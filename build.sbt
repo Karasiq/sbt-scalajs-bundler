@@ -25,16 +25,16 @@ lazy val projectSettings =
       "de.neuland-bfi"                % "jade4j"           % "1.1.4"     % Provided,
       "com.github.sommeri"            % "less4j"           % "1.15.4"    % Provided
     ),
-    addSbtPlugin(Deps.ScalaJS        % Provided),
-    addSbtPlugin(Deps.ScalaJSBundler % Provided)
+    addSbtPlugin(Deps.ScalaJS),
+    addSbtPlugin(Deps.ScalaJSBundler)
   )
 
 lazy val publishSettings =
   Seq(
-    sonatypeSessionName  := s"${name.value} v${version.value}",
-    publishConfiguration := publishConfiguration.value.withOverwrite(true),
-    publishTo            := sonatypePublishToBundle.value,
-    publishMavenStyle    := true,
+    sonatypeSessionName     := s"${name.value} v${version.value}",
+    publishConfiguration    := publishConfiguration.value.withOverwrite(true),
+    publishTo               := sonatypePublishToBundle.value,
+    publishMavenStyle       := true,
     publishArtifact in Test := false,
     pomIncludeRepository    := { _ => false },
     licenses                := Seq("Apache License, Version 2.0" -> url("http://opensource.org/licenses/Apache-2.0")),
@@ -59,8 +59,6 @@ lazy val publishSettings =
 lazy val Deps =
   new {
     lazy val ScalaJSVersion = sys.props.getOrElse("SCALAJS_VERSION", "0.6.33")
-
-    lazy val ScalaJS = "org.scala-js" % "sbt-scalajs" % ScalaJSVersion
-
+    lazy val ScalaJS        = "org.scala-js"  % "sbt-scalajs"         % ScalaJSVersion
     lazy val ScalaJSBundler = "ch.epfl.scala" % "sbt-scalajs-bundler" % "0.14.0"
   }
