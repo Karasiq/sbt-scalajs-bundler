@@ -107,3 +107,5 @@ jobs:
             sbt 'set ThisBuild/version := "${{ env.version }}";
                  sonatypeBundleRelease'
           fi
+          
+          echo 'Published version: `${{ env.version }}`' > $GITHUB_STEP_SUMMARY
