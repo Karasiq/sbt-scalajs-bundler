@@ -126,7 +126,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
     
     val compiler = new ScalaJSBundleCompiler
     compiler.createHtml(AssetCompilers.default, output, "index", assets, inline = true)
-    readFile(s"$output/index.html").hashCode shouldBe 1044397778
+    readFile(s"$output/index.html").hashCode shouldBe -328688657
     Files.size(Paths.get(s"$output/fonts/glyphicons-halflings-regular.woff2")) shouldBe 18028
 
     val fullOptCompilers = AssetCompilers {
