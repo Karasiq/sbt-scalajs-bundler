@@ -8,8 +8,8 @@ import com.yahoo.platform.yui.compressor.JavaScriptCompressor
 
 class JsYuiCompiler extends AssetCompiler {
   override def compile(contents: Seq[PageTypedContent]): String = {
-    val reader = new StringReader(ConcatCompiler.compile(contents))
-    val writer = new StringWriter(1024)
+    val reader     = new StringReader(ConcatCompiler.compile(contents))
+    val writer     = new StringWriter(1024)
     val compressor = new JavaScriptCompressor(reader, new YuiJavaScriptCompressor.DefaultErrorReporter)
     compressor.compress(writer, -1, true, false, false, false)
     writer.toString
