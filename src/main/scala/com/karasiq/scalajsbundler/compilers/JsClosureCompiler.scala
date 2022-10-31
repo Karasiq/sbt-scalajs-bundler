@@ -23,7 +23,8 @@ class JsClosureCompiler(advanced: Boolean) extends AssetCompiler {
     options.setLanguageOut(LanguageMode.STABLE_OUT)
 
     val level = if (advanced) {
-      CompilationLevel.ADVANCED_OPTIMIZATIONS
+      //CompilationLevel.ADVANCED_OPTIMIZATIONS // must track global refs for this to work
+      CompilationLevel.SIMPLE_OPTIMIZATIONS
     } else {
       CompilationLevel.SIMPLE_OPTIMIZATIONS
     }
