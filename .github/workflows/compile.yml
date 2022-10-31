@@ -2,6 +2,9 @@ name: Build project
 
 on:
   push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
   compile-sjs1:
@@ -25,7 +28,7 @@ jobs:
           key: sjsbundler-sbt-sjs1
       - name: Build project
         run: |
-          sbt -J-DSCALAJS_VERSION=1.11.0 ^compile
+          sbt -J-DSCALAJS_VERSION=1.11.0 ^compile ^test
   compile-sjs06:
     name: Build project for Scala.js 0.6.xx
     runs-on: ubuntu-18.04
@@ -46,4 +49,4 @@ jobs:
           key: sjsbundler-sbt-sjs06
       - name: Build project
         run: |
-          sbt -J-DSCALAJS_VERSION=0.6.33 ^compile
+          sbt -J-DSCALAJS_VERSION=0.6.33 ^compile ^test
