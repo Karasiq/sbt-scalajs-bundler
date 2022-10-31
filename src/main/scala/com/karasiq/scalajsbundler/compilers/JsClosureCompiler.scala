@@ -8,6 +8,9 @@ import com.google.javascript.jscomp.CompilerOptions.LanguageMode
 import com.karasiq.scalajsbundler.ScalaJSBundler.PageTypedContent
 
 class JsClosureCompiler(advanced: Boolean, langIn: LanguageMode, langOut: LanguageMode) extends AssetCompiler {
+  def this() =
+    this(advanced = false, LanguageMode.STABLE_IN, LanguageMode.STABLE_OUT)
+
   // noinspection ScalaDeprecation
   override def compile(contents: Seq[PageTypedContent]): String = {
     // Google Closure Compiler
@@ -43,6 +46,5 @@ object JsClosureCompiler {
     ): JsClosureCompiler =
     new JsClosureCompiler(advanced, langIn, langOut)
 
-  def default: JsClosureCompiler =
-    apply()
+  def default: JsClosureCompiler = new JsClosureCompiler()
 }
