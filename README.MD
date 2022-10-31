@@ -1,4 +1,4 @@
-# sbt-scalajs-bundler [![Build Status](https://travis-ci.org/Karasiq/sbt-scalajs-bundler.svg?branch=master)](https://travis-ci.org/Karasiq/sbt-scalajs-bundler) [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.29.svg)](https://www.scala-js.org) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.karasiq/sbt-scalajs-bundler/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.karasiq/sbt-scalajs-bundler)
+# sbt-scalajs-bundler  [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.29.svg)](https://www.scala-js.org) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.karasiq/sbt-scalajs-bundler/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.karasiq/sbt-scalajs-bundler)
 SBT plugin for auto compilation of web assets (js, css, html)
 
 # How to use

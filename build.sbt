@@ -1,4 +1,3 @@
-// Project
 lazy val `sbt-scalajs-bundler` =
   project.in(file("."))
     .settings(projectSettings, publishSettings)
@@ -36,13 +35,6 @@ lazy val publishSettings =
     publishConfiguration := publishConfiguration.value.withOverwrite(true),
     publishTo            := sonatypePublishToBundle.value,
     publishMavenStyle    := true,
-    publishTo := {
-      val nexus = "https://oss.sonatype.org/"
-      if (isSnapshot.value)
-        Some("snapshots" at nexus + "content/repositories/snapshots")
-      else
-        Some("releases" at nexus + "service/local/staging/deploy/maven2")
-    },
     publishArtifact in Test := false,
     pomIncludeRepository    := { _ => false },
     licenses                := Seq("Apache License, Version 2.0" -> url("http://opensource.org/licenses/Apache-2.0")),
@@ -70,9 +62,5 @@ lazy val Deps =
 
     lazy val ScalaJS = "org.scala-js" % "sbt-scalajs" % ScalaJSVersion
 
-    lazy val ScalaJSBundler =
-      if (ScalaJSVersion.startsWith("0.6."))
-        "ch.epfl.scala" % "sbt-scalajs-bundler-sjs06" % "0.19.0"
-      else
-        "ch.epfl.scala" % "sbt-scalajs-bundler" % "0.21.0"
+    lazy val ScalaJSBundler = "ch.epfl.scala" % "sbt-scalajs-bundler" % "0.15.0"
   }

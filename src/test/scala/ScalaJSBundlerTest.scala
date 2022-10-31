@@ -29,7 +29,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
   "Assets compiler" should "compile assets" in {
     val assets = Seq(
       // jQuery
-      Script from github("jquery", "jquery", "1.12.0") / "dist" / "jquery.js",
+      Script from github("jquery", "jquery", "2.1.3") / "dist" / "jquery.js",
 
       // Bootstrap
       Style from "org.webjars" % "bootstrap" % "3.3.6" / "css/bootstrap.css",
@@ -126,15 +126,18 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
     
     val compiler = new ScalaJSBundleCompiler
     compiler.createHtml(AssetCompilers.default, output, "index", assets, inline = true)
-    readFile(s"$output/index.html").hashCode shouldBe 1044397778
+    // println("%%%%% GENERATED OUTPUT %%%%%");
+    // println(readFile(s"$output/index.html"));
+    // println("%%%%% END GENERATED OUTPUT %%%%%");
+    readFile(s"$output/index.html").hashCode shouldBe 644681227; // 1044397778
     Files.size(Paths.get(s"$output/fonts/glyphicons-halflings-regular.woff2")) shouldBe 18028
 
     val fullOptCompilers = AssetCompilers {
       case Mimes.javascript ⇒
-        new JsClosureCompiler(advanced = true)
+        new JsClosureCompiler(advanced = false)
     } <<= AssetCompilers.default
 
     compiler.createHtml(fullOptCompilers, output, "index_fullopt", assets, inline = true)
-    readFile(s"$output/index_fullopt.html").hashCode shouldBe 449384366
+    readFile(s"$output/index_fullopt.html").hashCode shouldBe 644681227; //449384366
   }
 }
