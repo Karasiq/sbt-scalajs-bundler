@@ -70,6 +70,7 @@ jobs:
             echo '::set-env name=is_snapshot::false'
           fi
       - name: Install GPG key
+        if: ${{ secrets.OSSRH_GPG_KEY }}
         run: |
           echo '${{ secrets.OSSRH_GPG_KEY }}' > secret.gpg
           echo '${{ secrets.OSSRH_GPG_PASSPHRASE }}' | gpg --batch --yes --passphrase-fd 0 --import secret.gpg
@@ -83,6 +84,7 @@ jobs:
                                            "${{ secrets.OSSRH_USERNAME }}",
                                            "${{ secrets.OSSRH_PASSWORD }}")' > ~/.sbt/1.0/sonatype.sbt
       - name: Release SBT package
+        if: ${{ secrets.OSSRH_GPG_KEY }}
         run: |
           # See https://github.com/sbt/sbt-pgp/issues/173
           echo '#! /bin/sh
@@ -98,6 +100,3 @@ jobs:
             sbt 'set ThisBuild/version := "${{ env.version }}";
                  sonatypeBundleRelease'
           fi
-          
-          # Clean library files
-          sbt +clean
