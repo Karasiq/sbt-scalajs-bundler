@@ -1,4 +1,5 @@
 // Project
+
 lazy val `sbt-scalajs-bundler` =
   project.in(file("."))
     .settings(projectSettings, publishSettings)
@@ -70,9 +71,5 @@ lazy val Deps =
 
     lazy val ScalaJS = "org.scala-js" % "sbt-scalajs" % ScalaJSVersion
 
-    lazy val ScalaJSBundler =
-      if (ScalaJSVersion.startsWith("0.6."))
-        "ch.epfl.scala" % "sbt-scalajs-bundler-sjs06" % "0.19.0"
-      else
-        "ch.epfl.scala" % "sbt-scalajs-bundler" % "0.21.0"
+    lazy val ScalaJSBundler = "ch.epfl.scala" % "sbt-scalajs-bundler" % "0.15.0"
   }
