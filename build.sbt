@@ -1,60 +1,68 @@
-val scalaJSVersion = sys.env.getOrElse("SCALAJS_VERSION", "0.6.32")
+// Project
 
-organization := "com.github.karasiq"
+lazy val `sbt-scalajs-bundler` =
+  project.in(file("."))
+    .settings(projectSettings, publishSettings)
 
-name := "sbt-scalajs-bundler" // (if (scalaJSVersion.startsWith("1.")) "sbt-scalajs-bundler" else "sbt-scalajs-bundler-sjs06")
+// Settings
+lazy val projectSettings =
+  Seq(
+    organization := "com.github.karasiq",
+    name :=
+      "sbt-scalajs-bundler" // (if (scalaJSVersion.startsWith("1.")) "sbt-scalajs-bundler" else "sbt-scalajs-bundler-sjs06")
+    ,
+    crossSbtVersions := Seq("0.13.16", sbtVersion.value),
+    sbtPlugin :=
+      true,
+    libraryDependencies ++= Seq(
+      "org.scalatest"                %% "scalatest"        % "3.0.4"     % Test,
+      "org.webjars"                   % "bootstrap"        % "3.3.6"     % Test,
+      "org.webjars"                   % "jquery"           % "2.1.3"     % Test,
+      "commons-io"                    % "commons-io"       % "2.4",
+      "org.scalaj"                   %% "scalaj-http"      % "2.3.0",
+      "org.jsoup"                     % "jsoup"            % "1.8.3",
+      "com.google.javascript"         % "closure-compiler" % "v20190513" % Provided,
+      "com.yahoo.platform.yui"        % "yuicompressor"    % "2.4.8",
+      "com.googlecode.htmlcompressor" % "htmlcompressor"   % "1.5.2",
+      "de.neuland-bfi"                % "jade4j"           % "1.1.4"     % Provided,
+      "com.github.sommeri"            % "less4j"           % "1.15.4"    % Provided
+    ),
+    addSbtPlugin(Deps.ScalaJS        % Provided),
+    addSbtPlugin(Deps.ScalaJSBundler % Provided)
+  )
 
-version := "1.2.2"
+lazy val publishSettings =
+  Seq(
+    sonatypeSessionName  := s"${name.value} v${version.value}",
+    publishConfiguration := publishConfiguration.value.withOverwrite(true),
+    publishTo            := sonatypePublishToBundle.value,
+    publishMavenStyle    := true,
+    publishArtifact in Test := false,
+    pomIncludeRepository    := { _ => false },
+    licenses                := Seq("Apache License, Version 2.0" -> url("http://opensource.org/licenses/Apache-2.0")),
+    homepage                := Some(url("https://github.com/Karasiq/" + name.value)),
+    pomExtra := <scm>
+      <url>git@github.com:Karasiq/
+        {name.value}
+        .git</url>
+      <connection>scm:git:git@github.com:Karasiq/
+        {name.value}
+        .git</connection>
+    </scm>
+      <developers>
+        <developer>
+          <id>karasiq</id>
+          <name>Piston Karasiq</name>
+          <url>https://github.com/Karasiq</url>
+        </developer>
+      </developers>
+  )
 
-isSnapshot := version.value.endsWith("SNAPSHOT")
+lazy val Deps =
+  new {
+    lazy val ScalaJSVersion = sys.props.getOrElse("SCALAJS_VERSION", "0.6.33")
 
-crossSbtVersions := Seq("0.13.16", "1.1.0")
+    lazy val ScalaJS = "org.scala-js" % "sbt-scalajs" % ScalaJSVersion
 
-sbtPlugin := true
-
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion)
-
-libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.0.8" % "test",
-  "org.webjars" % "bootstrap" % "3.3.6" % "test",
-  "org.webjars" % "jquery" % "2.1.3" % "test",
-  "commons-io" % "commons-io" % "2.4",
-  "org.scalaj" %% "scalaj-http" % "2.3.0",
-  "org.jsoup" % "jsoup" % "1.8.3",
-  "com.google.javascript" % "closure-compiler" % "v20190513" % "provided",
-  "com.yahoo.platform.yui" % "yuicompressor" % "2.4.8",
-  "com.googlecode.htmlcompressor" % "htmlcompressor" % "1.5.2",
-  "de.neuland-bfi" % "jade4j" % "1.1.4" % "provided",
-  "com.github.sommeri" % "less4j" % "1.15.4" % "provided",
-  "com.sun.activation" % "javax.activation" % "1.2.0"
-)
-
-publishMavenStyle := true
-
-publishTo := {
-  val nexus = "https://oss.sonatype.org/"
-  if (isSnapshot.value)
-    Some("snapshots" at nexus + "content/repositories/snapshots")
-  else
-    Some("releases" at nexus + "service/local/staging/deploy/maven2")
-}
-
-publishArtifact in Test := false
-
-pomIncludeRepository := { _ ⇒ false }
-
-licenses := Seq("Apache License, Version 2.0" → url("http://opensource.org/licenses/Apache-2.0"))
-
-homepage := Some(url("https://github.com/Karasiq/" + name.value))
-
-pomExtra := <scm>
-  <url>git@github.com:Karasiq/{name.value}.git</url>
-  <connection>scm:git:git@github.com:Karasiq/{name.value}.git</connection>
-</scm>
-  <developers>
-    <developer>
-      <id>karasiq</id>
-      <name>Piston Karasiq</name>
-      <url>https://github.com/Karasiq</url>
-    </developer>
-  </developers>
+    lazy val ScalaJSBundler = "ch.epfl.scala" % "sbt-scalajs-bundler" % "0.15.0"
+  }
