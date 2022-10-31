@@ -156,9 +156,9 @@ trait AssetShortcuts { self: BundlerDsl with BundlerImplicits =>
       Def.task {
         val compiled =
           if (fastOpt)
-            (ScalaJS.fastOptJS in Compile).value
+            (ScalaJS.fastOptJS in project).value
           else
-            (ScalaJS.fullOptJS in Compile).value
+            (ScalaJS.fullOptJS in project).value
 
         val sourceMap = compiled.metadata(ScalaJS.scalaJSSourceMap)
 
@@ -174,9 +174,9 @@ trait AssetShortcuts { self: BundlerDsl with BundlerImplicits =>
 
         val compiled =
           if (fastOpt)
-            (SJSBundler.webpack in ScalaJS.fastOptJS in Compile).value
+            (SJSBundler.webpack in ScalaJS.fastOptJS in project).value
           else
-            (SJSBundler.webpack in ScalaJS.fullOptJS in Compile).value
+            (SJSBundler.webpack in ScalaJS.fullOptJS in project).value
 
         compiled.collect {
           case Attributed(script) if script.getName.endsWith(".js") => Script.from(script)
