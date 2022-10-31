@@ -1,17 +1,17 @@
 package com.karasiq.scalajsbundler
 
+import com.karasiq.scalajsbundler
+
 import java.io.IOException
 import java.nio.file.{Path, _}
 import java.nio.file.attribute.BasicFileAttributes
-
 import scala.collection.mutable.ListBuffer
-
 import sbt.{Def, _}
 import sbt.Keys._
 import sbt.plugins.JvmPlugin
-
 import com.karasiq.scalajsbundler.ScalaJSBundler.Bundle
 import com.karasiq.scalajsbundler.compilers.AssetCompilers
+import com.karasiq.scalajsbundler.dsl.SJSShortcuts
 
 object SJSAssetBundlerPlugin extends AutoPlugin {
   private def clearDirectory(destDir: Path): Unit =
@@ -50,12 +50,14 @@ object SJSAssetBundlerPlugin extends AutoPlugin {
   }
 
   object autoImport {
-    val scalaJsBundlerAssets = settingKey[Seq[Bundle]]("Scala.js bundler resources.")
+    val scalaJsBundlerAssets = taskKey[Seq[Bundle]]("Scala.js bundler resources.")
     val scalaJsBundlerDest   = settingKey[File]("Scala.js bundler output directory.")
     val scalaJsBundlerInline =
       settingKey[Boolean]("Scala.js bundler inline setting. All scripts and styles will be inlined in HTML if enabled.")
     val scalaJsBundlerCompilers = settingKey[AssetCompilers]("Scala.js asset compilers.")
     val scalaJsBundlerCompile   = taskKey[Seq[File]]("Compiles Scala.js bundles.")
+
+    val SJSApps = scalajsbundler.dsl.SJSShortcuts
 
     lazy val baseSJSAssetBundlerSettings: Seq[Def.Setting[_]] =
       Seq(

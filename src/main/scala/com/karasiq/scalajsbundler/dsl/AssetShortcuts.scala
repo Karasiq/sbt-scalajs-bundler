@@ -10,6 +10,7 @@ import com.karasiq.scalajsbundler.ScalaJSBundler.{PageContent, ResourceAsset}
 import org.scalajs.sbtplugin.ScalaJSPlugin.{autoImport => ScalaJS}
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.{autoImport => SJSBundler}
 
+//noinspection ScalaDeprecation,DuplicatedCode
 trait AssetShortcuts { self: BundlerDsl with BundlerImplicits =>
   def fontPackage(
       name: String,
@@ -117,9 +118,9 @@ trait AssetShortcuts { self: BundlerDsl with BundlerImplicits =>
       import sbt.{project => _, _}
       import sbt.Keys.{name, scalaVersion, target}
 
-      val nameValue    = (project / name).value
-      val targetValue  = (project / target).value
-      val versionValue = (project / scalaVersion).value
+      val nameValue    = (name in project).value
+      val targetValue  = (target in project).value
+      val versionValue = (scalaVersion in project).value
 
       val output = targetValue / s"scala-${CrossVersion.binaryScalaVersion(versionValue)}" / "scalajs-bundler" / "main"
       val sourceMapName =
@@ -136,9 +137,9 @@ trait AssetShortcuts { self: BundlerDsl with BundlerImplicits =>
       import sbt.Keys.{name, scalaVersion, target}
       import sbt.{project => _, _}
 
-      val nameValue    = (project / name).value
-      val targetValue  = (project / target).value
-      val versionValue = (project / scalaVersion).value
+      val nameValue    = (name in project).value
+      val targetValue  = (target in project).value
+      val versionValue = (scalaVersion in project).value
 
       val output = targetValue / s"scala-${CrossVersion.binaryScalaVersion(versionValue)}"
       val sourceMapName =
@@ -150,45 +151,42 @@ trait AssetShortcuts { self: BundlerDsl with BundlerImplicits =>
       Static(s"scripts/$sourceMapName") from (output / sourceMapName)
     }
 
-  def SJSApps: Def.Initialize[Task[SJSShortcuts]] =
-    Def.task {
-      object SJSShortcuts extends SJSShortcuts {
-        def app(project: Project, fastOpt: Boolean = false): Seq[ScalaJSBundler.PageTypedContent] = {
-          val compiled =
-            if (fastOpt)
-              (ScalaJS.fastOptJS in Compile).value
-            else
-              (ScalaJS.fullOptJS in Compile).value
+  object SJSShortcuts {
+    def app(project: Project, fastOpt: Boolean = false) =
+      Def.task {
+        val compiled =
+          if (fastOpt)
+            (ScalaJS.fastOptJS in Compile).value
+          else
+            (ScalaJS.fullOptJS in Compile).value
 
-          val sourceMap = compiled.metadata(ScalaJS.scalaJSSourceMap)
+        val sourceMap = compiled.metadata(ScalaJS.scalaJSSourceMap)
 
-          Seq(
-            Script.from(compiled.data),
-            Static(sourceMap.getName).withMime("application/json").from(sourceMap)
-          )
-        }
-
-        def bundlerApp(project: Project, fastOpt: Boolean = false): Seq[ScalaJSBundler.PageContent] = {
-          import scalajsbundler.BundlerFileType
-
-          val compiled =
-            if (fastOpt)
-              (SJSBundler.webpack in ScalaJS.fastOptJS in Compile).value
-            else
-              (SJSBundler.webpack in ScalaJS.fullOptJS in Compile).value
-
-          compiled.collect {
-            case Attributed(script) if script.getName.endsWith(".js") => Script.from(script)
-
-            case Attributed(sourceMap) if sourceMap.getName.endsWith(".map") =>
-              Static(sourceMap.getName).withMime("application/json").from(sourceMap)
-
-            case a @ Attributed(asset) if a.metadata(SJSBundler.BundlerFileTypeAttr) == BundlerFileType.Asset =>
-              Static(asset.getName).from(asset)
-          }.flatten
-        }
+        Seq(
+          Script.from(compiled.data),
+          Static(sourceMap.getName).withMime("application/json").from(sourceMap)
+        )
       }
 
-      SJSShortcuts
-    }
+    def bundlerApp(project: Project, fastOpt: Boolean = false) =
+      Def.task {
+        import scalajsbundler.BundlerFileType
+
+        val compiled =
+          if (fastOpt)
+            (SJSBundler.webpack in ScalaJS.fastOptJS in Compile).value
+          else
+            (SJSBundler.webpack in ScalaJS.fullOptJS in Compile).value
+
+        compiled.collect {
+          case Attributed(script) if script.getName.endsWith(".js") => Script.from(script)
+
+          case Attributed(sourceMap) if sourceMap.getName.endsWith(".map") =>
+            Static(sourceMap.getName).withMime("application/json").from(sourceMap)
+
+          case a @ Attributed(asset) if a.metadata(SJSBundler.BundlerFileTypeAttr) == BundlerFileType.Asset =>
+            Static(asset.getName).from(asset)
+        }.flatten
+      }
+  }
 }
