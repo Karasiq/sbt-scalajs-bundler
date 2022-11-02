@@ -19,7 +19,7 @@ lazy val projectSettings =
       true,
     libraryDependencies ++= Seq(
       "org.scalatest"                %% "scalatest"        % "3.0.4"     % Test,
-      "org.webjars"                   % "bootstrap"        % "3.3.6"     % Test,
+      "org.webjars"                   % "bootstrap"        % "3.3.7-1"   % Test,
       "org.webjars"                   % "jquery"           % "2.1.3"     % Test,
       "commons-io"                    % "commons-io"       % "2.4",
       "org.scalaj"                   %% "scalaj-http"      % "2.3.0",
@@ -30,7 +30,7 @@ lazy val projectSettings =
       "de.neuland-bfi"                % "jade4j"           % "1.1.4"     % Provided,
       "com.github.sommeri"            % "less4j"           % "1.15.4"    % Provided
     ),
-    addSbtPlugin(Deps.ScalaJS % Provided),
+    addSbtPlugin(Deps.ScalaJS        % Provided),
     addSbtPlugin(Deps.ScalaJSBundler % Provided)
   )
 
