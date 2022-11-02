@@ -28,9 +28,9 @@ lazy val projectSettings =
       "com.yahoo.platform.yui"        % "yuicompressor"    % "2.4.8",
       "com.googlecode.htmlcompressor" % "htmlcompressor"   % "1.5.2",
       "de.neuland-bfi"                % "jade4j"           % "1.1.4"     % Provided,
-      "com.github.sommeri"            % "less4j"           % "1.15.4"    % Provided
+      "com.github.sommeri"            % "less4j"           % "1.17.2"    % Provided
     ),
-    addSbtPlugin(Deps.ScalaJS % Provided),
+    addSbtPlugin(Deps.ScalaJS        % Provided),
     addSbtPlugin(Deps.ScalaJSBundler % Provided)
   )
 
