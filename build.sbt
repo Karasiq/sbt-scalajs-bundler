@@ -23,14 +23,14 @@ lazy val projectSettings =
       "org.webjars"                   % "jquery"           % "2.1.3"     % Test,
       "commons-io"                    % "commons-io"       % "2.4",
       "org.scalaj"                   %% "scalaj-http"      % "2.3.0",
-      "org.jsoup"                     % "jsoup"            % "1.8.3",
+      "org.jsoup"                     % "jsoup"            % "1.15.3",
       "com.google.javascript"         % "closure-compiler" % "v20190513" % Provided,
       "com.yahoo.platform.yui"        % "yuicompressor"    % "2.4.8",
       "com.googlecode.htmlcompressor" % "htmlcompressor"   % "1.5.2",
       "de.neuland-bfi"                % "jade4j"           % "1.1.4"     % Provided,
       "com.github.sommeri"            % "less4j"           % "1.15.4"    % Provided
     ),
-    addSbtPlugin(Deps.ScalaJS % Provided),
+    addSbtPlugin(Deps.ScalaJS        % Provided),
     addSbtPlugin(Deps.ScalaJSBundler % Provided)
   )
 
