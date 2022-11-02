@@ -46,5 +46,6 @@ object JsClosureCompiler {
     ): JsClosureCompiler =
     new JsClosureCompiler(advanced, langIn, langOut)
 
-  def default: JsClosureCompiler = new JsClosureCompiler()
+  def default: JsClosureCompiler =
+    new JsClosureCompiler()
 }
