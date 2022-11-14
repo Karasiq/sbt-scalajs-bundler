@@ -30,7 +30,7 @@ lazy val projectSettings =
       "de.neuland-bfi"                % "jade4j"           % "1.1.4"     % Provided,
       "com.github.sommeri"            % "less4j"           % "1.15.4"    % Provided
     ),
-    addSbtPlugin(Deps.ScalaJS % Provided),
+    addSbtPlugin(Deps.ScalaJS        % Provided),
     addSbtPlugin(Deps.ScalaJSBundler % Provided)
   )
 
@@ -74,6 +74,6 @@ lazy val Deps =
       if (isScalaJs06)
         "ch.epfl.scala" % "sbt-scalajs-bundler-sjs06" % "0.18.0"
       else
-        "ch.epfl.scala" % "sbt-scalajs-bundler" % "0.21.0"
+        "ch.epfl.scala" % "sbt-scalajs-bundler" % "0.21.1"
 
   }
