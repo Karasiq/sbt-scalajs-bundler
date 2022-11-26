@@ -63,7 +63,7 @@ lazy val publishSettings =
 
 lazy val Deps =
   new {
-    lazy val ScalaJSVersion = sys.props.getOrElse("SCALAJS_VERSION", "1.8.0")
+    lazy val ScalaJSVersion = sys.props.getOrElse("SCALAJS_VERSION", "1.12.0")
 
     def isScalaJs06: Boolean =
       ScalaJSVersion.startsWith("0.6.")
