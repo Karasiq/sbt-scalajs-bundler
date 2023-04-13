@@ -24,7 +24,7 @@ lazy val projectSettings =
       "commons-io"                    % "commons-io"       % "2.4",
       "org.scalaj"                   %% "scalaj-http"      % "2.3.0",
       "org.jsoup"                     % "jsoup"            % "1.8.3",
-      "com.google.javascript"         % "closure-compiler" % "v20190513" % Provided,
+      "com.google.javascript"         % "closure-compiler" % "v20230411" % Provided,
       "com.yahoo.platform.yui"        % "yuicompressor"    % "2.4.8",
       "com.googlecode.htmlcompressor" % "htmlcompressor"   % "1.5.2",
       "de.neuland-bfi"                % "jade4j"           % "1.1.4"     % Provided,
