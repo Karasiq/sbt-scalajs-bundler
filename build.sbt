@@ -21,7 +21,7 @@ lazy val projectSettings =
       "org.scalatest"                %% "scalatest"        % "3.0.4"     % Test,
       "org.webjars"                   % "bootstrap"        % "3.3.6"     % Test,
       "org.webjars"                   % "jquery"           % "2.1.3"     % Test,
-      "commons-io"                    % "commons-io"       % "2.4",
+      "commons-io"                    % "commons-io"       % "2.15.1",
       "org.scalaj"                   %% "scalaj-http"      % "2.3.0",
       "org.jsoup"                     % "jsoup"            % "1.8.3",
       "com.google.javascript"         % "closure-compiler" % "v20190513" % Provided,
