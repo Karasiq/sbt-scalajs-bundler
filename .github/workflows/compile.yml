@@ -27,7 +27,7 @@ jobs:
           key: sjsbundler-sbt-sjs1
       - name: Build project
         run: |
-          sbt -J-DSCALAJS_VERSION=1.8.0 ^test
+          sbt -J-DSCALAJS_VERSION=1.16.0 ^test
   compile-sjs06:
     name: Build project for Scala.js 0.6.xx
     runs-on: ubuntu-18.04
