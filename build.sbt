@@ -18,7 +18,7 @@ lazy val projectSettings =
     sbtPlugin :=
       true,
     libraryDependencies ++= Seq(
-      "org.scalatest"                %% "scalatest"        % "3.0.4"     % Test,
+      "org.scalatest"                %% "scalatest"        % "3.0.9"     % Test,
       "org.webjars"                   % "bootstrap"        % "3.3.6"     % Test,
       "org.webjars"                   % "jquery"           % "2.1.3"     % Test,
       "commons-io"                    % "commons-io"       % "2.4",
