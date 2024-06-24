@@ -57,7 +57,7 @@ object SJSAssetBundlerPlugin extends AutoPlugin {
     val scalaJsBundlerCompilers = settingKey[AssetCompilers]("Scala.js asset compilers.")
     val scalaJsBundlerCompile   = taskKey[Seq[File]]("Compiles Scala.js bundles.")
 
-    val SJSApps = scalajsbundler.dsl.SJSShortcuts
+    val SJSApps           = scalajsbundler.dsl.SJSShortcuts
     val SJSAssetCompilers = AssetCompilers
 
     lazy val baseSJSAssetBundlerSettings: Seq[Def.Setting[_]] =
