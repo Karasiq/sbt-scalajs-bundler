@@ -17,7 +17,7 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
 
   def readFile(file: String): String = {
     val inputStream = new FileInputStream(file)
-    val result = Try(IOUtils.toString(inputStream))
+    val result      = Try(IOUtils.toString(inputStream))
     IOUtils.closeQuietly(inputStream)
     result.getOrElse("")
   }
@@ -27,24 +27,25 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
   }
 
   "Assets compiler" should "compile assets" in {
-    val assets = Seq(
-      // jQuery
-      Script from github("jquery", "jquery", "2.1.3") / "dist" / "jquery.js",
+    val assets =
+      Seq(
+        // jQuery
+        Script from github("jquery", "jquery", "2.1.3") / "dist" / "jquery.js",
 
-      // Bootstrap
-      Style from "org.webjars" % "bootstrap" % "3.3.6" / "css/bootstrap.css",
+        // Bootstrap
+        Style from "org.webjars" % "bootstrap" % "3.3.7-1" / "css/bootstrap.css",
 
-      // Page static files
-      Script from """
-                  |function hello(name) {
-                  |  alert('Hello ' + name);
-                  |}
-                  |$(function() {
-                  |  hello('JavaScript!');
-                  |});
+        // Page static files
+        Script from """
+                      |function hello(name) {
+                      |  alert('Hello ' + name);
+                      |}
+                      |$(function() {
+                      |  hello('JavaScript!');
+                      |});
                 """.stripMargin,
-      Script
-        .withMime(Mimes.coffeescript) from
+        Script
+          .withMime(Mimes.coffeescript) from
           """
             |# Assignment:
             |number   = 42
@@ -75,55 +76,58 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
             |# Array comprehensions:
             |cubes = (math.cube num for num in list)
           """.stripMargin,
-      Style from """
-                   |.hello-world {
-                   | font-family: Gill Sans, Verdana;
-                   |	font-size: 11px;
-                   |	line-height: 14px;
-                   |	text-transform: uppercase;
-                   |	letter-spacing: 2px;
-                   |	font-weight: bold;
-                   |};
+        Style from """
+                     |.hello-world {
+                     | font-family: Gill Sans, Verdana;
+                     |	font-size: 11px;
+                     |	line-height: 14px;
+                     |	text-transform: uppercase;
+                     |	letter-spacing: 2px;
+                     |	font-weight: bold;
+                     |};
                  """.stripMargin,
-      Style
-        .withMime(Mimes.less) from
-        """
-          |.class { width: (1 + 1) }
+        Style
+          .withMime(Mimes.less) from
+          """
+            |.class { width: (1 + 1) }
         """.stripMargin,
-      Html from """
-                  |<!DOCTYPE html>
-                  |<html>
-                  |<head>
-                  |<title>Hello world</title>
-                  |</head>
-                  |<body style='font-family: Geneva, Arial, Helvetica, sans-serif'>
-                  |<h1 class="hello-world">Hello world!</h1>
-                  |</body>
-                  |</html>
+        Html from """
+                    |<!DOCTYPE html>
+                    |<html>
+                    |<head>
+                    |<title>Hello world</title>
+                    |</head>
+                    |<body style='font-family: Geneva, Arial, Helvetica, sans-serif'>
+                    |<h1 class="hello-world">Hello world!</h1>
+                    |</body>
+                    |</html>
                 """.stripMargin,
-      Html
-        .withMime(Mimes.jade) from """
-                  |html
-                  |  head
-                  |  body(style='background: url(/background.jpg);')
-                  |    h2.hello-jade Hello jade!
+        Html
+          .withMime(Mimes.jade) from """
+                                       |html
+                                       |  head
+                                       |  body(style='background: url(/background.jpg);')
+                                       |    h2.hello-jade Hello jade!
                 """.stripMargin
-    ) ++ ("org.webjars" % "bootstrap" % "3.3.6" / "fonts/glyphicons-halflings-regular").fonts()
+      ) ++ ("org.webjars" % "bootstrap" % "3.3.7-1" / "fonts/glyphicons-halflings-regular").fonts()
 
     if (Files.isDirectory(Paths.get(output))) {
-      Files.walkFileTree(Paths.get(output), new SimpleFileVisitor[Path] {
-        override def postVisitDirectory(dir: Path, exc: IOException): FileVisitResult = {
-          Files.delete(dir)
-          FileVisitResult.CONTINUE
-        }
+      Files.walkFileTree(
+        Paths.get(output),
+        new SimpleFileVisitor[Path] {
+          override def postVisitDirectory(dir: Path, exc: IOException): FileVisitResult = {
+            Files.delete(dir)
+            FileVisitResult.CONTINUE
+          }
 
-        override def visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult = {
-          Files.delete(file)
-          FileVisitResult.CONTINUE
+          override def visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult = {
+            Files.delete(file)
+            FileVisitResult.CONTINUE
+          }
         }
-      })
+      )
     }
-    
+
     val compiler = new ScalaJSBundleCompiler
     compiler.createHtml(AssetCompilers.default, output, "index", assets, inline = true)
     // println("%%%%% GENERATED OUTPUT %%%%%");
@@ -133,6 +137,6 @@ class ScalaJSBundlerTest extends FlatSpec with Matchers {
     Files.size(Paths.get(s"$output/fonts/glyphicons-halflings-regular.woff2")) shouldBe 18028
 
     compiler.createHtml(AssetCompilers.default, output, "index_fullopt", assets, inline = true)
-    readFile(s"$output/index_fullopt.html").hashCode shouldBe 644681227; //449384366
+    readFile(s"$output/index_fullopt.html").hashCode shouldBe 644681227; // 449384366
   }
 }
